@@ -47,6 +47,10 @@ body:not(.aberto) #b-play,body:not(.aberto) #b-tom{display:none}
 .r button{min-width:46px;font-size:13px;padding:8px}
 .r.oc .tx{opacity:.4}
 .r .olho.off{color:var(--rm);border-color:var(--rm)}
+#rep-ch{display:flex;gap:7px;flex-wrap:wrap;margin:4px 0 8px}
+#rep-ch button{min-height:38px;padding:7px 11px;font-size:12px;border-radius:999px}
+#rep-ch button.on{background:var(--ac);border-color:var(--ac);color:#fff}
+.rg{margin:16px 4px 4px;font-weight:800;font-size:13px;letter-spacing:.08em;color:var(--ac);border-bottom:2px solid var(--ac);padding-bottom:5px}
 #pe{margin-top:30px;display:flex;flex-direction:column;gap:10px}
 #pe .lk{font-size:13px;color:var(--dim);word-break:break-all}
 #b-noite{color:var(--rm);border-color:var(--rm)}
@@ -76,7 +80,7 @@ body:not(.aberto) #b-play,body:not(.aberto) #b-tom{display:none}
  <div id="tabs"><button data-a="fila">FILA <span id="nf"></span></button><button data-a="rep">REPERTÓRIO</button></div>
  <div id="rede"><i></i><span>conectando…</span></div>
  <div id="v-fila"></div>
- <div id="v-rep" hidden><input id="rep-busca" type="search" placeholder="procurar" autocomplete="off"><div id="rep-l"></div></div>
+ <div id="v-rep" hidden><input id="rep-busca" type="search" placeholder="procurar" autocomplete="off"><div id="rep-ch"></div><div id="rep-l"></div></div>
  <div id="pe">
   <div class="lk">link do público: <b>__URL_PUB__</b></div>
   <button id="b-noite">NOVA NOITE (zera a fila)</button>
@@ -172,16 +176,24 @@ function render(){
  if(CURQ&&cur>=0)pintaNowQ();
 }
 function norm(t){return String(t).normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase()}
-var ORDA=M.map(function(m,i){return i}).sort(function(a,b){return M[a].t.localeCompare(M[b].t,'pt')});
+var ESTILOS=__ESTILOS__,REPF=lsx('bk_rest')||'';
+var ORDA=M.map(function(m,i){return i}).sort(function(a,b){var d=ESTILOS.indexOf(M[a].s)-ESTILOS.indexOf(M[b].s);return d||M[a].t.localeCompare(M[b].t,'pt')});
 function artista(i){var e=G('m'+i).querySelector('h2 em');return e?e.textContent:''}
 function rep(){
- var q=norm(G('rep-busca').value.trim()),h='';
- ORDA.forEach(function(i){var a=artista(i);if(q&&norm(M[i].t+' '+a).indexOf(q)<0)return;
+ var q=norm(G('rep-busca').value.trim()),h='',gs='';
+ var c='<button data-s=""'+(REPF?'':' class="on"')+'>TODAS ('+M.length+')</button>';
+ ESTILOS.forEach(function(s){var k=M.filter(function(m){return m.s===s}).length;c+='<button data-s="'+esc(s)+'"'+(REPF===s?' class="on"':'')+'>'+esc(s)+' ('+k+')</button>'});
+ G('rep-ch').innerHTML=c;
+ ORDA.forEach(function(i){var a=M[i].a||artista(i);
+  if(REPF&&M[i].s!==REPF&&!q)return;
+  if(q&&norm(M[i].t+' '+a).indexOf(q)<0)return;
+  if(M[i].s!==gs){gs=M[i].s;h+='<div class="rg">'+esc(gs)+'</div>'}
   var oc=ST.oc.indexOf(M[i].t)>=0;
   h+='<div class="r'+(oc?' oc':'')+'" data-i="'+i+'"><div class="tx" data-a="abre"><b>'+esc(M[i].t)+'</b><span>'+esc(a)+'<em>'+esc(tomDe(M[i].t))+'</em></span></div>'+
    '<button data-a="add">+ FILA</button><button class="olho'+(oc?' off':'')+'" data-a="olho">'+(oc?'OCULTA':'NO QR')+'</button></div>'});
  G('rep-l').innerHTML=h||'<div class="vz">nada com esse nome</div>';
 }
+G('rep-ch').addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;REPF=b.dataset.s;lsx('bk_rest',REPF);rep()});
 function aba(a){ABA=a;lsx('bk_aba',a);G('v-fila').hidden=a!=='fila';G('v-rep').hidden=a!=='rep';
  [].forEach.call(G('tabs').children,function(b){b.classList.toggle('on',b.dataset.a===a)});if(a==='rep')rep()}
 G('tabs').addEventListener('click',function(e){var b=e.target.closest('button');if(b)aba(b.dataset.a)});

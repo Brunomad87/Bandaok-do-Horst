@@ -39,6 +39,12 @@ ul{list-style:none;margin:10px 0 0;padding:0}
 #lista .t span{display:block;font-size:14px;color:var(--dim);margin-top:1px}
 #lista .mais{flex:none;width:38px;height:38px;border-radius:50%;border:2px solid var(--ac);color:var(--ac);
  display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:800}
+#chips{display:flex;gap:8px;overflow-x:auto;padding:12px 0 4px;margin:0 -16px;padding-left:16px;padding-right:16px;scrollbar-width:none}
+#chips::-webkit-scrollbar{display:none}
+#chips button{flex:none;padding:9px 14px;font-size:13px;border-radius:999px;letter-spacing:.04em;background:var(--bar)}
+#chips button.on{background:var(--ac);border-color:var(--ac);color:#1a0d04}
+#lista li.gh{display:block;cursor:default;padding:22px 4px 8px;border-bottom:2px solid var(--ac);font-size:13px;font-weight:800;letter-spacing:.12em;color:var(--ac)}
+#lista li.gh:active{background:none}
 #vazio{color:var(--dim);padding:20px 4px;display:none}
 details{margin-top:12px}
 summary{cursor:pointer;font-weight:800;font-size:13px;letter-spacing:.12em;color:var(--dim);padding:6px 0}
@@ -79,6 +85,7 @@ button:disabled{opacity:.5}
  <div class="box" id="meus" hidden><h3>TEUS PEDIDOS</h3><div class="l"></div></div>
 
  <input id="busca" type="search" placeholder="procura música ou artista" autocomplete="off">
+ <div id="chips"></div>
  <ul id="lista"></ul>
  <div id="vazio">Essa a gente não tem ensaiada. Tenta outra!</div>
 
@@ -94,10 +101,11 @@ button:disabled{opacity:.5}
  <div class="bts"><button id="b-nao">voltar</button><button class="go" id="b-sim">QUERO CANTAR 🎤</button></div>
 </div></div>
 
-<div id="ok"><div class="big">🎤</div><h2>Pedido feito!</h2><p id="ok-p"></p><button class="go" id="b-okx">beleza</button></div>
+<div id="ok"><div class="big">🎤</div><h2>Pedido feito!</h2><p id="ok-p"></p><button class="go" id="b-okx">&#8249; voltar pra lista</button></div>
 
 <script>
-var CAT=__CATALOGO__;
+var CAT=__CATALOGO__,ESTILOS=__ESTILOS__,FILTRO=lsx_('bk_est')||'';
+function lsx_(k){try{return localStorage.getItem(k)}catch(e){return null}}
 __COMUM__
 var MAX_PEND=2;
 var DEV=lsx('bk_dev');if(!DEV){DEV=novoId();lsx('bk_dev',DEV)}
@@ -106,15 +114,29 @@ var ST=null,ESC=null;
 function G(i){return document.getElementById(i)}
 function norm(t){return String(t).normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase()}
 
+function chips(){
+ var h='<button data-s=""'+(FILTRO?'':' class="on"')+'>TODAS</button>';
+ ESTILOS.forEach(function(s){h+='<button data-s="'+esc(s)+'"'+(FILTRO===s?' class="on"':'')+'>'+esc(s)+'</button>'});
+ G('chips').innerHTML=h;
+}
 function pintaLista(){
  var q=norm(G('busca').value.trim()),oc=ST?ST.oc:[],n=0,h='';
- CAT.forEach(function(c,i){
-  if(oc.indexOf(c.t)>=0)return;
-  if(q&&norm(c.t+' '+c.a).indexOf(q)<0)return;
-  n++;h+='<li data-i="'+i+'"><div class="t"><b>'+esc(c.t)+'</b><span>'+esc(c.a)+'</span></div><div class="mais">+</div></li>';
+ ESTILOS.forEach(function(s){
+  if(FILTRO&&FILTRO!==s&&!q)return;
+  var g='';
+  CAT.forEach(function(c,i){
+   if(c.s!==s||oc.indexOf(c.t)>=0)return;
+   if(q&&norm(c.t+' '+c.a).indexOf(q)<0)return;
+   n++;g+='<li data-i="'+i+'"><div class="t"><b>'+esc(c.t)+'</b><span>'+esc(c.a)+'</span></div><div class="mais">+</div></li>';
+  });
+  if(g)h+='<li class="gh">'+esc(s)+'</li>'+g;
  });
  G('lista').innerHTML=h;G('vazio').style.display=n?'none':'block';
 }
+G('chips').addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;
+ FILTRO=b.dataset.s;lsx('bk_est',FILTRO);chips();pintaLista();
+ var y=G('busca').getBoundingClientRect().top+scrollY-8;if(scrollY>y)scrollTo(0,y)});
+chips();
 function statusTxt(q,pos){
  if(!q)return 'enviado';
  if(q.s==='agora')return 'É TUA VEZ! vem pro palco';
