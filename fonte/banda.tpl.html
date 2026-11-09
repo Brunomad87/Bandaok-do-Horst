@@ -1,0 +1,261 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>BANDAOK · banda</title>
+<script>try{var _t0=localStorage.getItem('mad_tema');document.documentElement.dataset.t=(_t0===null?'dark':_t0)}catch(e){document.documentElement.dataset.t='dark'}</script>
+<style>
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{padding-top:env(safe-area-inset-top,0px)}
+[hidden]{display:none!important}
+__ESTILO__
+/* ---- BANDAOK ---- */
+#b-set{position:relative}
+#b-set .bd{position:absolute;top:-7px;right:-7px;min-width:22px;height:22px;padding:0 6px;border-radius:11px;
+ background:var(--ac);color:#fff;font-size:12px;line-height:22px;font-weight:800}
+body:not(.aberto) #b-set{display:none}
+body:not(.aberto) #b-play,body:not(.aberto) #b-tom{display:none}
+#now b.can{color:var(--ac)}
+#lst{padding:8px 10px 60px}
+#tabs{display:flex;gap:8px;margin:6px 0 4px;align-items:center}
+#tabs button{flex:1;font-size:15px;letter-spacing:.04em}
+#tabs button.on{background:var(--ac);border-color:var(--ac);color:#fff}
+#rede{font-size:12px;font-weight:700;color:var(--dim);margin:6px 4px 10px;display:flex;gap:6px;align-items:center}
+#rede i{width:9px;height:9px;border-radius:50%;background:#c8341f;display:inline-block}
+#rede.on i{background:var(--ok)}
+.h{margin:18px 4px 6px;font-weight:800;font-size:13px;letter-spacing:.08em;color:var(--ac);border-bottom:2px solid var(--ac);padding-bottom:6px}
+.h.dim{color:var(--dim);border-color:var(--ln)}
+.q{display:flex;align-items:center;gap:10px;padding:12px 6px;border-bottom:1px solid var(--ln)}
+.q .p{min-width:28px;text-align:right;color:var(--dim);font-size:14px}
+.q .tx{flex:1;min-width:0;cursor:pointer}
+.q .tx b{display:block;font-size:20px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.q .tx span{display:block;font-size:15px;color:var(--dim);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.q .tx span em{font-style:normal;color:var(--ac);font-weight:700}
+.q button{min-width:52px;font-size:14px;padding:9px 10px}
+.q .go{color:var(--ok);border:2px solid var(--ok)}
+.q .x{color:var(--rm)}
+.q.agora{background:var(--bar);border:2px solid var(--ac);border-radius:14px;margin:4px 0}
+.q.agora .tx b{font-size:26px}
+.q.feita{opacity:.55}
+.q.feita .tx b{font-size:16px}
+.vz{color:var(--dim);padding:14px 6px;font-size:15px}
+#rep-busca{width:100%;font:inherit;font-size:16px;padding:12px;border-radius:10px;border:1px solid var(--ln);background:var(--bar);color:var(--fg);outline:none;margin:4px 0 6px}
+.r{display:flex;align-items:center;gap:8px;padding:10px 6px;border-bottom:1px solid var(--ln)}
+.r .tx{flex:1;min-width:0;cursor:pointer}
+.r .tx b{display:block;font-size:18px}
+.r .tx span{font-size:14px;color:var(--dim)}
+.r .tx span em{font-style:normal;color:var(--ac);font-weight:700;margin-left:6px}
+.r button{min-width:46px;font-size:13px;padding:8px}
+.r.oc .tx{opacity:.4}
+.r .olho.off{color:var(--rm);border-color:var(--rm)}
+#pe{margin-top:30px;display:flex;flex-direction:column;gap:10px}
+#pe .lk{font-size:13px;color:var(--dim);word-break:break-all}
+#b-noite{color:var(--rm);border-color:var(--rm)}
+#b-ant.q-mode{color:var(--rm);font-size:13px}
+#b-prox.q-mode{color:var(--ok);border:2px solid var(--ok);font-size:13px}
+#sh{position:fixed;inset:0;z-index:45;display:none;align-items:flex-end;justify-content:center;background:rgba(0,0,0,.55)}
+#sh.on{display:flex}
+#sh .in{width:100%;max-width:620px;background:var(--bar);border-top:2px solid var(--ac);border-radius:18px 18px 0 0;
+ padding:18px 16px calc(env(safe-area-inset-bottom) + 18px)}
+#sh h3{margin:0 0 4px;font-size:21px}
+#sh p{margin:0 0 10px;color:var(--dim);font-size:15px}
+#sh input{width:100%;font:inherit;font-size:19px;padding:12px;border-radius:10px;border:1px solid var(--ln);background:var(--bg);color:var(--fg);outline:none}
+#sh .bts{display:flex;gap:8px;margin-top:12px}
+#sh .bts button{flex:1}
+#sh .bts .ok{background:var(--ac);border-color:var(--ac);color:#fff}
+</style></head><body>
+<div id="bar">
+ <button id="b-set">&#8249; FILA<span class="bd" hidden></span></button>
+ <div id="now">BANDAOK</div>
+ <button id="b-play">&#9654;</button>
+ <button id="b-menos">A&minus;</button><button id="b-mais">A+</button>
+ <button id="b-tom">TOM</button>
+ <button id="b-ped">P&Eacute;</button>
+ <button id="b-tema"><span class="ic"></span></button>
+</div>
+<div id="lst">
+ <div id="tabs"><button data-a="fila">FILA <span id="nf"></span></button><button data-a="rep">REPERTÓRIO</button></div>
+ <div id="rede"><i></i><span>conectando…</span></div>
+ <div id="v-fila"></div>
+ <div id="v-rep" hidden><input id="rep-busca" type="search" placeholder="procurar" autocomplete="off"><div id="rep-l"></div></div>
+ <div id="pe">
+  <div class="lk">link do público: <b>__URL_PUB__</b></div>
+  <button id="b-noite">NOVA NOITE (zera a fila)</button>
+ </div>
+</div>
+__SECOES__
+<div id="nav">
+ <button id="b-ant">&#8249;</button>
+ <button id="b-topo">TOPO</button>
+ <button id="b-mv">&minus;</button>
+ <span id="vel">18</span>
+ <button id="b-pv">+</button>
+ <button id="b-prox">&#8250;</button>
+</div>
+<div id="tp"><button id="tp-m">&minus;&frac12;</button><span id="tp-v"></span><button id="tp-p">+&frac12;</button><button id="tp-0">original</button></div>
+<div id="pedal">
+ <h3>Pedal</h3>
+ <p>Pareia o passador de p&aacute;gina como <b>teclado Bluetooth</b> (modo HID) e pise &mdash; o que ele mandar aparece ali embaixo.
+ Pra amarrar: toque em <b>aprender</b> e pise no interruptor que vai fazer aquilo.
+ Se o pedal estiver em modo MIDI, liga o MIDI primeiro.<br>No karaok&ecirc;: <b>pr&oacute;xima</b> = cantor terminou, chama o pr&oacute;ximo da fila; <b>anterior</b> = volta pra fila.</p>
+ <div class="pl" id="pl-tog"><span class="lb">play / pausa</span><span class="vl" id="pv-tog">&mdash;</span><button data-a="tog">aprender</button></div>
+ <div class="pl" id="pl-prox"><span class="lb">pr&oacute;xima m&uacute;sica</span><span class="vl" id="pv-prox">&mdash;</span><button data-a="prox">aprender</button></div>
+ <div class="pl" id="pl-ant"><span class="lb">m&uacute;sica anterior</span><span class="vl" id="pv-ant">&mdash;</span><button data-a="ant">aprender</button></div>
+ <div id="psig">pise no pedal pra ver o que ele manda</div>
+ <div id="pmidi"></div>
+ <div id="pbt">
+  <button id="b-pmidi">ligar MIDI</button>
+  <button id="b-pzero">voltar ao padr&atilde;o</button>
+  <button id="b-pfecha">pronto</button>
+ </div>
+</div>
+<div id="flash"></div>
+<div id="toast"></div>
+<div id="sh"><div class="in"><h3></h3><p></p><input id="sh-i" maxlength="30" hidden><div class="bts"><button id="sh-n">cancelar</button><button class="ok" id="sh-s">ok</button></div></div></div>
+<script>
+var M=__M__,cur=-1,aj=0,lock=null;
+__ENGINE__
+__COMUM__
+/* ---------------- BANDAOK: lado da banda ---------------- */
+var IDX={};M.forEach(function(m,i){IDX[m.t]=i});
+var EVS=[],VISTO={},PEND=[],ST=estado([]),CURQ=null,ABA=lsx('bk_aba')||'fila',carregou=false;
+function aviso(m){var t=G('toast');t.textContent=m;t.classList.add('on');clearTimeout(aviso.t);aviso.t=setTimeout(function(){t.classList.remove('on')},2200)}
+function recalc(){
+ EVS.sort(function(a,b){return a._t-b._t});
+ ST=estado(EVS.concat(PEND));render();
+}
+var rcT=null;function agenda(){clearTimeout(rcT);rcT=setTimeout(recalc,60)}
+function entra(e){
+ if(VISTO[e._id])return;VISTO[e._id]=1;
+ if(e.x)PEND=PEND.filter(function(p){return p.x!==e.x});
+ EVS.push(e);
+ if(carregou&&e.k==='ped'&&e.d!=='banda')aviso('🎤 novo pedido: '+String(e.n||'').slice(0,30)+' · '+String(e.m||'').slice(0,40));
+ agenda();
+}
+/* acao da banda: aparece na hora (PEND) e some do PEND quando o eco do servidor chega */
+function age(e){
+ e.x=novoId();var l=JSON.parse(JSON.stringify(e));l._t=9e12;l._id='L'+e.x;PEND.push(l);recalc();
+ return manda(e).catch(function(){PEND=PEND.filter(function(p){return p.x!==e.x});recalc();aviso('sem internet: não salvou')});
+}
+function marca(id,s){if(ST.Q[id]&&ST.Q[id].s!==s)age({k:'st',id:id,s:s})}
+
+/* ---- conexao: SSE ao vivo + conferida periodica ---- */
+var es=null,vivo=false;
+function rede(){var r=G('rede');r.classList.toggle('on',vivo);r.querySelector('span').textContent=vivo?'ao vivo':'reconectando… (os pedidos esperam no servidor)'}
+function conecta(){
+ try{es=new EventSource(SRV+'/'+TOPICO+'/sse?since=all')}catch(e){return}
+ es.onopen=function(){vivo=true;rede()};
+ es.onerror=function(){vivo=false;rede()};
+ es.onmessage=function(m){var o;try{o=JSON.parse(m.data)}catch(x){return}var e=evDe(o);if(e)entra(e)};
+}
+function confere(){return ler().then(function(l){l.forEach(entra);carregou=true;if(!vivo&&es&&es.readyState===2){conecta()}}).catch(function(){})}
+setInterval(function(){if(!vivo||Math.random()<.25)confere()},20000);
+
+/* ---- listas ---- */
+function tomDe(t){var i=IDX[t];if(i==null)return '';var b=tomBase(i),tr=b?trDe(i):0;return tr?tomNome(b,tr)+' ('+trTxt(tr)+')':M[i].k}
+function linhaQ(q,pos,cls){
+ var tem=IDX[q.m]!=null,bts='';
+ if(cls==='agora')bts='<button class="go" data-a="abre">CIFRA</button><button data-a="feita">&#10003;</button><button class="x" data-a="pula">&#10005;</button>';
+ else if(cls==='fila')bts='<button class="go" data-a="chama">CHAMAR</button><button class="x" data-a="pula">&#10005;</button>';
+ else bts='<button data-a="volta">&#8634;</button>';
+ return '<div class="q '+cls+'" data-id="'+esc(q.id)+'"><span class="p">'+(pos||'')+'</span><div class="tx" data-a="'+(cls==='feita'?'':cls==='agora'?'abre':'chama')+'"><b>'+esc(q.n)+'</b><span>'+esc(q.m)+(tem?' <em>'+esc(tomDe(q.m))+'</em>':' <em>sem cifra</em>')+(q.s==='pulada'?' · pulada':'')+'</span></div>'+bts+'</div>';
+}
+function render(){
+ var h='';
+ if(ST.agora.length){h+='<div class="h">AGORA NO PALCO</div>';ST.agora.forEach(function(q){h+=linhaQ(q,'🎤','agora')})}
+ h+='<div class="h">NA FILA ('+ST.fila.length+')</div>';
+ h+=ST.fila.length?ST.fila.map(function(q,k){return linhaQ(q,k+1,'fila')}).join(''):'<div class="vz">Fila vazia. Os pedidos do QR caem aqui sozinhos.</div>';
+ if(ST.feitas.length){h+='<div class="h dim">JÁ CANTARAM ('+ST.feitas.length+')</div>';h+=ST.feitas.map(function(q){return linhaQ(q,'','feita')}).join('')}
+ G('v-fila').innerHTML=h;
+ G('nf').textContent=ST.fila.length?'('+ST.fila.length+')':'';
+ var bd=G('b-set').querySelector('.bd');bd.hidden=!ST.fila.length;bd.textContent=ST.fila.length;
+ if(!G('v-rep').hidden)rep();
+ if(CURQ&&cur>=0)pintaNowQ();
+}
+function norm(t){return String(t).normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase()}
+var ORDA=M.map(function(m,i){return i}).sort(function(a,b){return M[a].t.localeCompare(M[b].t,'pt')});
+function artista(i){var e=G('m'+i).querySelector('h2 em');return e?e.textContent:''}
+function rep(){
+ var q=norm(G('rep-busca').value.trim()),h='';
+ ORDA.forEach(function(i){var a=artista(i);if(q&&norm(M[i].t+' '+a).indexOf(q)<0)return;
+  var oc=ST.oc.indexOf(M[i].t)>=0;
+  h+='<div class="r'+(oc?' oc':'')+'" data-i="'+i+'"><div class="tx" data-a="abre"><b>'+esc(M[i].t)+'</b><span>'+esc(a)+'<em>'+esc(tomDe(M[i].t))+'</em></span></div>'+
+   '<button data-a="add">+ FILA</button><button class="olho'+(oc?' off':'')+'" data-a="olho">'+(oc?'OCULTA':'NO QR')+'</button></div>'});
+ G('rep-l').innerHTML=h||'<div class="vz">nada com esse nome</div>';
+}
+function aba(a){ABA=a;lsx('bk_aba',a);G('v-fila').hidden=a!=='fila';G('v-rep').hidden=a!=='rep';
+ [].forEach.call(G('tabs').children,function(b){b.classList.toggle('on',b.dataset.a===a)});if(a==='rep')rep()}
+G('tabs').addEventListener('click',function(e){var b=e.target.closest('button');if(b)aba(b.dataset.a)});
+G('rep-busca').addEventListener('input',rep);
+
+/* ---- folha de confirmacao / nome ---- */
+var shOk=null;
+function folha(tit,txt,input,okTxt,fn){var s=G('sh');s.querySelector('h3').textContent=tit;s.querySelector('p').textContent=txt||'';
+ var i=G('sh-i');i.hidden=!input;i.value='';i.placeholder=input||'';G('sh-s').textContent=okTxt||'ok';shOk=fn;s.classList.add('on');
+ if(input)setTimeout(function(){i.focus()},60)}
+function folhaFecha(){G('sh').classList.remove('on');shOk=null}
+G('sh-n').onclick=folhaFecha;
+G('sh-s').onclick=function(){var f=shOk,v=G('sh-i').value.replace(/\s+/g,' ').trim();if(!G('sh-i').hidden&&v.length<1)return;folhaFecha();if(f)f(v)};
+G('sh-i').addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();G('sh-s').click()}});
+
+/* ---- abrir cifra ---- */
+function pintaNowQ(){var q=ST.Q[CURQ],i=cur;if(!q)return;
+ G('now').innerHTML='🎤 <b class="can">'+esc(q.n)+'</b> · '+esc(M[i].t)+(M[i].vs?'<span class="vs">VS</span>':'')+'<i></i>';tomAplica(i)}
+function abre(i,qid){
+ pausa();
+ if(cur>=0)G('m'+cur).hidden=true;
+ cur=i;CURQ=qid||null;G('lst').style.display='none';G('m'+i).hidden=false;
+ G('now').innerHTML=esc(M[i].t)+(M[i].vs?'<span class="vs">VS</span>':'')+'<i>'+esc(M[i].k)+'</i>';
+ if(CURQ)pintaNowQ();
+ G('nav').style.display='flex';document.body.classList.add('aberto');
+ var a=G('b-ant'),p=G('b-prox');a.classList.toggle('q-mode',!!CURQ);p.classList.toggle('q-mode',!!CURQ);
+ a.innerHTML=CURQ?'&#10005; PULA':'&#8249;';p.innerHTML=CURQ?'&#10003; PRÓX':'&#8250;';
+ var v=ls(vk(i));vel=v?+v:18;mostraVel();
+ tomAplica(i);fit();scrollTo(0,0);trava();
+}
+function volta(){
+ pausa();G('tp').classList.remove('on');
+ if(cur>=0)G('m'+cur).hidden=true;
+ cur=-1;CURQ=null;G('lst').style.display='block';G('nav').style.display='none';
+ document.body.classList.remove('aberto');G('now').textContent='BANDAOK';render();scrollTo(0,0);
+}
+/* chamar um pedido: quem estava no palco vira "cantou" */
+function chama(id){
+ var q=ST.Q[id];if(!q)return;
+ ST.agora.forEach(function(a){if(a.id!==id)marca(a.id,'feita')});
+ marca(id,'agora');
+ if(IDX[q.m]!=null)abre(IDX[q.m],id);else aviso('"'+q.m+'" não tem cifra aqui');
+}
+function proximo(){var n=ST.fila.filter(function(q){return q.id!==CURQ})[0];if(n)chama(n.id);else{volta();aviso('fila vazia')}}
+function acaoProx(){
+ if(cur<0)return;
+ if(CURQ){marca(CURQ,'feita');proximo();return}
+ var p=ORDA.indexOf(cur);if(p>=0&&p<ORDA.length-1)abre(ORDA[p+1]);
+}
+function acaoAnt(){
+ if(cur<0)return;
+ if(CURQ){volta();return}
+ var p=ORDA.indexOf(cur);if(p>0)abre(ORDA[p-1]);
+}
+G('b-prox').onclick=acaoProx;
+G('b-ant').onclick=function(){if(CURQ){var q=ST.Q[CURQ];folha('Pular '+(q?q.n:'')+'?','Vai pra "já cantaram" como pulada e chama o próximo.',null,'PULAR',function(){marca(CURQ,'pulada');proximo()})}else acaoAnt()};
+G('b-set').onclick=volta;
+G('v-fila').addEventListener('click',function(e){var el=e.target.closest('[data-a]'),row=e.target.closest('.q');if(!el||!row||!el.dataset.a)return;
+ var id=row.dataset.id,a=el.dataset.a,q=ST.Q[id];if(!q)return;
+ if(a==='chama')chama(id);
+ else if(a==='abre'){if(IDX[q.m]!=null)abre(IDX[q.m],id)}
+ else if(a==='feita')marca(id,'feita');
+ else if(a==='pula')folha('Pular '+q.n+'?','"'+q.m+'" vai pra lista de já cantaram.',null,'PULAR',function(){marca(id,'pulada')});
+ else if(a==='volta')marca(id,'fila');
+});
+G('rep-l').addEventListener('click',function(e){var el=e.target.closest('[data-a]'),row=e.target.closest('.r');if(!el||!row)return;
+ var i=+row.dataset.i,a=el.dataset.a;
+ if(a==='abre')abre(i);
+ else if(a==='add')folha('+ fila: '+M[i].t,'Nome de quem vai cantar',"nome",'POR NA FILA',function(n){age({k:'ped',id:novoId(),m:M[i].t,n:n,d:'banda'});aviso('na fila: '+n)});
+ else if(a==='olho'){var oc=ST.oc.slice(),k=oc.indexOf(M[i].t);if(k>=0)oc.splice(k,1);else oc.push(M[i].t);age({k:'oculta',l:oc})}
+});
+G('b-noite').onclick=function(){folha('Nova noite?','Zera a fila e o "já cantaram" pra todo mundo. As músicas ocultas continuam ocultas.',null,'ZERAR',function(){
+ age({k:'reset'})})};
+document.addEventListener('click',function(){trava()},{once:true});
+aba(ABA);render();rede();conecta();confere();
+</script>
+</body></html>

@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0e1012">
+<title>BANDAOK do Horst · pede tua música</title>
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{--bg:#0e1012;--fg:#eef0f2;--dim:#8b939c;--ac:#ff9147;--bar:#181b1f;--ln:#282d33;--ok:#4ade80}
+html,body{margin:0;background:var(--bg);color:var(--fg);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
+body{padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom)}
+main{max-width:560px;margin:0 auto;padding:18px 16px 120px}
+h1{margin:6px 0 0;font-size:44px;line-height:.95;letter-spacing:-.03em;font-weight:900}
+h1 span{color:var(--ac)}
+.sub{margin:4px 0 0;font-size:15px;font-weight:700;letter-spacing:.14em;color:var(--dim);text-transform:uppercase}
+.lead{margin:14px 0 18px;font-size:16px;line-height:1.45;color:var(--dim)}
+.lead b{color:var(--fg)}
+.box{border:1px solid var(--ln);background:var(--bar);border-radius:16px;padding:14px 16px;margin:0 0 12px}
+.box h3{margin:0 0 6px;font-size:12px;letter-spacing:.14em;color:var(--dim);font-weight:800}
+#palco .q{font-size:20px;font-weight:800}
+#palco .q i{display:block;font-style:normal;font-weight:600;font-size:15px;color:var(--ac);margin-top:2px}
+#meus{border-color:var(--ac)}
+.meu{display:flex;gap:10px;align-items:baseline;padding:8px 0;border-top:1px solid var(--ln)}
+.meu:first-of-type{border-top:none}
+.meu .mt{flex:1;font-weight:700}
+.meu .ms{font-size:14px;font-weight:700;color:var(--dim);text-align:right}
+.meu.agora{animation:pisca 1s ease-in-out infinite alternate}
+.meu.agora .ms{color:var(--ok);font-size:16px}
+@keyframes pisca{from{opacity:1}to{opacity:.55}}
+#busca{width:100%;font:inherit;font-size:17px;padding:14px 16px;border-radius:14px;border:1px solid var(--ln);
+ background:var(--bar);color:var(--fg);outline:none;position:sticky;top:8px;z-index:3}
+#busca:focus{border-color:var(--ac)}
+ul{list-style:none;margin:10px 0 0;padding:0}
+#lista li{display:flex;align-items:center;gap:12px;padding:14px 4px;border-bottom:1px solid var(--ln);cursor:pointer}
+#lista li:active{background:var(--bar)}
+#lista .t{flex:1;min-width:0}
+#lista .t b{display:block;font-size:18px}
+#lista .t span{display:block;font-size:14px;color:var(--dim);margin-top:1px}
+#lista .mais{flex:none;width:38px;height:38px;border-radius:50%;border:2px solid var(--ac);color:var(--ac);
+ display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:800}
+#vazio{color:var(--dim);padding:20px 4px;display:none}
+details{margin-top:12px}
+summary{cursor:pointer;font-weight:800;font-size:13px;letter-spacing:.12em;color:var(--dim);padding:6px 0}
+#fila li{padding:7px 0;border-bottom:1px solid var(--ln);font-size:15px}
+#fila li em{font-style:normal;color:var(--dim)}
+#sh{position:fixed;inset:0;z-index:20;display:none;align-items:flex-end;justify-content:center;background:rgba(0,0,0,.6)}
+#sh.on{display:flex}
+#sh .in{width:100%;max-width:560px;background:var(--bar);border-top:2px solid var(--ac);border-radius:20px 20px 0 0;
+ padding:20px 18px calc(env(safe-area-inset-bottom) + 20px)}
+#sh .mu{font-size:24px;font-weight:900;line-height:1.1}
+#sh .ar{color:var(--dim);font-weight:600;margin-top:2px}
+#sh label{display:block;margin:18px 0 6px;font-size:13px;font-weight:800;letter-spacing:.1em;color:var(--dim)}
+#nome{width:100%;font:inherit;font-size:20px;padding:14px;border-radius:12px;border:1px solid var(--ln);background:var(--bg);color:var(--fg);outline:none}
+#nome:focus{border-color:var(--ac)}
+.bts{display:flex;gap:10px;margin-top:16px}
+button{font:inherit;font-weight:800;border-radius:14px;padding:16px;font-size:17px;border:1px solid var(--ln);background:var(--bg);color:var(--fg);cursor:pointer}
+button.go{flex:1;background:var(--ac);border-color:var(--ac);color:#1a0d04}
+button:disabled{opacity:.5}
+#msg{min-height:20px;margin-top:10px;font-size:14px;font-weight:700;color:var(--ac)}
+#ok{position:fixed;inset:0;z-index:30;display:none;flex-direction:column;align-items:center;justify-content:center;
+ text-align:center;padding:30px;background:var(--bg)}
+#ok.on{display:flex}
+#ok .big{font-size:84px;line-height:1}
+#ok h2{font-size:30px;margin:14px 0 6px}
+#ok p{color:var(--dim);font-size:17px;line-height:1.45;margin:0 0 24px;max-width:360px}
+#ok p b{color:var(--fg)}
+#upd{font-size:12px;color:var(--dim);text-align:center;margin-top:22px}
+#upd button{font-size:12px;padding:6px 10px;border-radius:8px;margin-left:6px}
+</style>
+</head>
+<body>
+<main>
+ <h1>BANDA<span>OK</span></h1>
+ <div class="sub">karaokê com banda ao vivo · Horst</div>
+ <p class="lead">Escolhe a música, bota teu nome e <b>fica de olho no palco</b>: a banda chama na hora.</p>
+
+ <div class="box" id="palco" hidden><h3>AGORA NO PALCO</h3><div class="q"></div></div>
+ <div class="box" id="meus" hidden><h3>TEUS PEDIDOS</h3><div class="l"></div></div>
+
+ <input id="busca" type="search" placeholder="procura música ou artista" autocomplete="off">
+ <ul id="lista"></ul>
+ <div id="vazio">Essa a gente não tem ensaiada. Tenta outra!</div>
+
+ <details id="dfila"><summary>FILA DE HOJE (<span id="nfila">0</span>)</summary><ul id="fila"></ul></details>
+ <div id="upd"><span id="updt"></span><button id="b-upd">atualizar</button></div>
+</main>
+
+<div id="sh"><div class="in">
+ <div class="mu" id="sh-m"></div><div class="ar" id="sh-a"></div>
+ <label for="nome">TEU NOME (É ASSIM QUE A GENTE VAI TE CHAMAR)</label>
+ <input id="nome" maxlength="30" autocomplete="given-name" enterkeyhint="send" placeholder="ex: Ju da mesa 7">
+ <div id="msg"></div>
+ <div class="bts"><button id="b-nao">voltar</button><button class="go" id="b-sim">QUERO CANTAR 🎤</button></div>
+</div></div>
+
+<div id="ok"><div class="big">🎤</div><h2>Pedido feito!</h2><p id="ok-p"></p><button class="go" id="b-okx">beleza</button></div>
+
+<script>
+var CAT=__CATALOGO__;
+__COMUM__
+var MAX_PEND=2;
+var DEV=lsx('bk_dev');if(!DEV){DEV=novoId();lsx('bk_dev',DEV)}
+var MEUS=[];try{MEUS=JSON.parse(lsx('bk_meus')||'[]')||[]}catch(e){}
+var ST=null,ESC=null;
+function G(i){return document.getElementById(i)}
+function norm(t){return String(t).normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase()}
+
+function pintaLista(){
+ var q=norm(G('busca').value.trim()),oc=ST?ST.oc:[],n=0,h='';
+ CAT.forEach(function(c,i){
+  if(oc.indexOf(c.t)>=0)return;
+  if(q&&norm(c.t+' '+c.a).indexOf(q)<0)return;
+  n++;h+='<li data-i="'+i+'"><div class="t"><b>'+esc(c.t)+'</b><span>'+esc(c.a)+'</span></div><div class="mais">+</div></li>';
+ });
+ G('lista').innerHTML=h;G('vazio').style.display=n?'none':'block';
+}
+function statusTxt(q,pos){
+ if(!q)return 'enviado';
+ if(q.s==='agora')return 'É TUA VEZ! vem pro palco';
+ if(q.s==='feita')return 'cantou ✓';
+ if(q.s==='pulada')return 'não rolou dessa vez';
+ return pos?('na fila · '+pos+'º'):'na fila';
+}
+function pinta(){
+ if(ST){
+  var ag=ST.agora[0];
+  G('palco').hidden=!ag;
+  if(ag)G('palco').querySelector('.q').innerHTML=esc(ag.n)+'<i>'+esc(ag.m)+'</i>';
+  G('nfila').textContent=ST.fila.length;
+  G('fila').innerHTML=ST.fila.map(function(q,k){return '<li>'+(k+1)+'. '+esc(q.n)+' <em>· '+esc(q.m)+'</em></li>'}).join('')||'<li><em>ninguém na fila ainda. Começa tu!</em></li>';
+  /* pedido some do servidor depois de "nova noite": tira da lista local */
+  MEUS=MEUS.filter(function(m){return ST.Q[m.id]||(Date.now()-m.t<120000)});lsx('bk_meus',JSON.stringify(MEUS));
+ }
+ var h='';
+ MEUS.slice().reverse().forEach(function(m){
+  var q=ST&&ST.Q[m.id],pos=q&&q.s==='fila'?ST.fila.indexOf(q)+1:0;
+  h+='<div class="meu'+(q&&q.s==='agora'?' agora':'')+'"><span class="mt">'+esc(m.m)+'</span><span class="ms">'+statusTxt(q,pos)+'</span></div>';
+ });
+ G('meus').hidden=!MEUS.length;G('meus').querySelector('.l').innerHTML=h;
+ pintaLista();
+}
+function pendentes(){return MEUS.filter(function(m){var q=ST&&ST.Q[m.id];return !q||q.s==='fila'||q.s==='agora'}).length}
+var carregando=false;
+function atualiza(){
+ if(carregando)return;carregando=true;
+ ler().then(function(evs){ST=estado(evs);var d=new Date();
+  G('updt').textContent='atualizado '+('0'+d.getHours()).slice(-2)+':'+('0'+d.getMinutes()).slice(-2);pinta()})
+ .catch(function(){G('updt').textContent='sem conexão agora, tenta de novo'})
+ .then(function(){carregando=false});
+}
+/* auto-atualiza so pra quem tem pedido rolando (muita gente no mesmo wi-fi divide o limite do servidor) */
+setInterval(function(){if(!document.hidden&&pendentes())atualiza()},45000);
+document.addEventListener('visibilitychange',function(){if(!document.hidden)atualiza()});
+G('b-upd').onclick=atualiza;
+G('busca').addEventListener('input',pintaLista);
+G('lista').addEventListener('click',function(e){var li=e.target.closest('li[data-i]');if(!li)return;
+ ESC=CAT[+li.dataset.i];G('sh-m').textContent=ESC.t;G('sh-a').textContent=ESC.a;G('msg').textContent='';
+ G('nome').value=lsx('bk_nome')||'';G('sh').classList.add('on');setTimeout(function(){G('nome').focus()},80)});
+function fecha(){G('sh').classList.remove('on');ESC=null}
+G('b-nao').onclick=fecha;
+G('sh').addEventListener('click',function(e){if(e.target===G('sh'))fecha()});
+G('nome').addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();G('b-sim').click()}});
+G('b-sim').onclick=function(){
+ var n=G('nome').value.replace(/\s+/g,' ').trim();
+ if(n.length<2){G('msg').textContent='Bota teu nome pra gente te chamar.';return}
+ if(pendentes()>=MAX_PEND){G('msg').textContent='Tu já tem '+MAX_PEND+' pedidos na fila. Espera cantar um!';return}
+ var bt=this;bt.disabled=true;G('msg').textContent='enviando...';
+ var id=novoId(),m=ESC.t;
+ manda({k:'ped',id:id,m:m,n:n,d:DEV}).then(function(){
+  lsx('bk_nome',n);MEUS.push({id:id,m:m,t:Date.now()});lsx('bk_meus',JSON.stringify(MEUS));
+  fecha();G('ok-p').innerHTML='<b>'+esc(m)+'</b> tá na fila no nome de <b>'+esc(n)+'</b>.<br>Fica ligado que a banda chama!';
+  G('ok').classList.add('on');atualiza();
+ }).catch(function(){G('msg').textContent='Não foi. Confere a internet e tenta de novo.'})
+ .then(function(){bt.disabled=false});
+};
+G('b-okx').onclick=function(){G('ok').classList.remove('on');scrollTo(0,0)};
+pinta();atualiza();
+</script>
+</body>
+</html>
