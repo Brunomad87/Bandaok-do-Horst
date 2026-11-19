@@ -6446,7 +6446,7 @@ function renumDe(ul){var n=0;itensDe(ul).forEach(function(li){
  if(li.classList.contains('sec'))return;n++;var s=li.querySelector('.n');if(s)s.textContent=n})}
 function renum(){renumDe(ulA())}
 function salva(){ls('mad_ordem:'+SH,JSON.stringify(ids()));ls('mad_ordem_v:'+SH,ulA().dataset.ordv);
- ls('mad_fora:'+SH,JSON.stringify(FORA[SH]||[]))}
+ ls('mad_fora:'+SH,JSON.stringify(FORA[SH]||[]));if(typeof envia==='function')envia(SH)}
 function chv(id){return String(id||'').replace(/^x:/,'t:')}
 function aplica(id){
  /* carimbo diferente = arquivo novo com outra ordem pra este show: vale a do arquivo.
@@ -6470,7 +6470,7 @@ function aplica(id){
 function mostraShow(id){
  SH=id;ls('mad_show',id);
  SHOWS.forEach(function(s){ulDe(s.id).hidden=(s.id!==id)});
- var s=SHOWS.filter(function(x){return x.id===id})[0];G('shn').textContent=s?('show '+s.nome):'';
+ var s=SHOWS.filter(function(x){return x.id===id})[0];G('shn').textContent=s?('show '+s.nome):'';if(typeof selo==='function')selo();
 }
 function numDe(i){var a=ulA().querySelector('a[data-i="'+i+'"]');return a?a.querySelector('.n').textContent:(i+1)}
 function editar(on){ED=on;document.body.classList.toggle('edit',on);
@@ -6507,7 +6507,7 @@ function caiNaTela(t){var o=G('ov');o.querySelector('textarea').value=t;o.style.
 G('ov-x').onclick=function(){G('ov').style.display='none'};
 G('b-ed').onclick=function(){editar(!ED)};
 G('b-pronto').onclick=function(){editar(false)};
-G('b-orig').onclick=function(){ls('mad_ordem:'+SH,'');ls('mad_fora:'+SH,'');location.reload()};
+G('b-orig').onclick=function(){ls('mad_ordem:'+SH,'');ls('mad_fora:'+SH,'');envia(SH);setTimeout(function(){location.reload()},MESTRE?600:0)};
 G('b-copia').onclick=function(){var t=texto();
  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(t).then(function(){aviso('ordem copiada')},function(){caiNaTela(t)})}
  else caiNaTela(t)};
@@ -6565,8 +6565,47 @@ G('set').addEventListener('pointerdown',function(e){if(!ED)return;var h=e.target
  SHOWS.forEach(function(s){if(s.ordv===v&&!ls('mad_ordem_v:'+s.id)){
   ls('mad_ordem:'+s.id,ls('mad_ordem')||'');ls('mad_ordem_v:'+s.id,v)}});
  ls('mad_ordem','');ls('mad_ordem_v','')})();
+/* ---- SINCRONIA: o MESTRE (tablet do Mad, aberto uma vez com ?mestre=1) manda ordem + tiradas;
+   os outros recebem ao vivo pelo ntfy.sh. Sem internet tudo continua igual, so local. ---- */
+var NT='https://ntfy.sh/madtrio-x4p9-ordem-k3w8',ORIG={},SYNC_ON=false;
+(function(){var q=/[?&]mestre=([01])/.exec(location.search);if(q)ls('mad_mestre',q[1]==='1'?'1':'')})();
+var MESTRE=ls('mad_mestre')==='1';
+SHOWS.forEach(function(s){ORIG[s.id]=itensDe(ulDe(s.id)).slice()});
+function syncTs(id){return +(ls('mad_sync_ts:'+id)||0)}
+function idx(id,lista){var arq=ORIG[id].map(function(li){return chv(li.dataset.id)});
+ return lista.map(function(x){return arq.indexOf(chv(x))}).filter(function(k){return k>=0})}
+function pacote(id,ts){var o=[],f=[];try{o=JSON.parse(ls('mad_ordem:'+id)||'[]')||[]}catch(e){}
+ try{f=JSON.parse(ls('mad_fora:'+id)||'[]')||[]}catch(e){}
+ return JSON.stringify({id:id,ts:ts,v:ulDe(id).dataset.ordv,o:idx(id,o),f:idx(id,f)})}
+function posta(id,ts){try{fetch(NT,{method:'POST',body:pacote(id,ts)}).catch(function(){})}catch(e){}}
+function envia(id){if(!MESTRE)return;var ts=Date.now();ls('mad_sync_ts:'+id,ts);posta(id,ts)}
+function recebe(m){if(!m||!ORIG[m.id]||m.v!==ulDe(m.id).dataset.ordv||!(m.ts>syncTs(m.id)))return false;
+ var id=m.id,arq=ORIG[id].map(function(li){return chv(li.dataset.id)});
+ ls('mad_ordem:'+id,JSON.stringify((m.o||[]).map(function(k){return arq[k]}).filter(Boolean)));
+ ls('mad_fora:'+id,JSON.stringify((m.f||[]).map(function(k){return arq[k]}).filter(Boolean)));
+ ls('mad_ordem_v:'+id,m.v);ls('mad_sync_ts:'+id,m.ts);
+ if(MESTRE&&ED&&id===SH)return true; /* o mestre nao e atropelado no meio da edicao */
+ var ul=ulDe(id);ORIG[id].forEach(function(li){ul.appendChild(li)});aplica(id);
+ if(id===SH&&!document.body.classList.contains('capa'))aviso('ordem atualizada');
+ if(document.body.classList.contains('capa'))capa();
+ return true}
+function msgDe(txt){try{var e=JSON.parse(txt);return e.event==='message'?JSON.parse(e.message):null}catch(x){return null}}
+function selo(){var p=G('shn');if(!p)return;var b=p.querySelector('.sy');if(!b){b=document.createElement('span');b.className='sy';p.appendChild(b)}
+ b.textContent=SYNC_ON?(MESTRE?'  · ● AO VIVO (mestre)':'  · ● AO VIVO'):'  · ○ só local';b.style.color=SYNC_ON?'var(--ok,#3ddc84)':'var(--dim,#888)'}
+function liga_sync(){
+ fetch(NT+'/json?poll=1&since=12h').then(function(r){return r.text()}).then(function(t){
+  var vistos={};t.split('\n').forEach(function(l){var m=msgDe(l);if(m){vistos[m.id]=1;recebe(m)}});
+  /* a mensagem some do servidor em ~12 h: quem tem a ultima ordem republica (mesmo carimbo de tempo, nao atropela) */
+  SHOWS.forEach(function(s){if(!vistos[s.id]&&syncTs(s.id))posta(s.id,syncTs(s.id))});
+ }).catch(function(){}).then(function(){
+  try{var es=new EventSource(NT+'/sse');
+   es.onopen=function(){SYNC_ON=true;selo()};es.onerror=function(){SYNC_ON=false;selo()};
+   es.onmessage=function(e){var m=msgDe(e.data);if(m)recebe(m)}}catch(e){}
+ });
+}
 SHOWS.forEach(function(s){aplica(s.id)});
 (function(){var q=ls('mad_show');mostraShow(SHOWS.some(function(s){return s.id===q})?q:SHOWS[0].id)})();
 capa();
 mostraVel();
+selo();liga_sync();
 </script></body></html>
