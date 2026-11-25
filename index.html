@@ -5,102 +5,152 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#0e1012">
 <title>BANDAOKE do Horst · pede tua música</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=Archivo:wght@400;600;800&family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
 <style>
+/* BANDAOKE · publico — cervejaria a noite: chope escuro, espuma, laranja Mad, comanda de papel */
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-:root{--bg:#0e1012;--fg:#eef0f2;--dim:#8b939c;--ac:#ff9147;--bar:#181b1f;--ln:#282d33;--ok:#4ade80}
-html,body{margin:0;background:var(--bg);color:var(--fg);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
-body{padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom)}
-main{max-width:560px;margin:0 auto;padding:18px 16px 120px}
-h1{margin:6px 0 0;font-size:44px;line-height:.95;letter-spacing:-.03em;font-weight:900}
-h1 span{color:var(--ac)}
-.sub{margin:4px 0 0;font-size:15px;font-weight:700;letter-spacing:.14em;color:var(--dim);text-transform:uppercase}
-.lead{margin:14px 0 18px;font-size:16px;line-height:1.45;color:var(--dim)}
-.lead b{color:var(--fg)}
-.box{border:1px solid var(--ln);background:var(--bar);border-radius:16px;padding:14px 16px;margin:0 0 12px}
-.box h3{margin:0 0 6px;font-size:12px;letter-spacing:.14em;color:var(--dim);font-weight:800}
-#palco .q{font-size:20px;font-weight:800}
-#palco .q i{display:block;font-style:normal;font-weight:600;font-size:15px;color:var(--ac);margin-top:2px}
-#meus{border-color:var(--ac)}
-.meu{display:flex;gap:10px;align-items:baseline;padding:8px 0;border-top:1px solid var(--ln)}
+:root{--noite:#17110C;--malte:#231A13;--ln:#3A2C21;--espuma:#F6EBDD;--dim:#A89480;--mad:#FF7A1A;--ambar:#F2B33D;
+ --papel:#F3E6CC;--tinta:#2A1E14;--ok:#7BD88F;
+ --slab:"Alfa Slab One",Rockwell,"Roboto Slab",Georgia,serif;--corpo:Archivo,-apple-system,"Segoe UI",Roboto,sans-serif;--tipo:"Courier Prime","Courier New",monospace}
+html,body{margin:0;background:var(--noite);color:var(--espuma);font-family:var(--corpo)}
+body{padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom);
+ background:radial-gradient(120% 60% at 50% -10%,#3a2414 0%,rgba(23,17,12,0) 60%) no-repeat,var(--noite)}
+main{max-width:560px;margin:0 auto;padding:22px 16px 120px}
+:focus-visible{outline:3px solid var(--ambar);outline-offset:2px}
+[hidden]{display:none!important}
+
+/* cabeca: rotulo de chope */
+.rotulo{text-align:center;padding:6px 0 4px}
+.rotulo .de{font-family:var(--tipo);font-size:13px;letter-spacing:.32em;color:var(--dim);text-transform:uppercase}
+h1{margin:4px 0 0;font-family:var(--slab);font-weight:400;font-size:clamp(46px,14vw,66px);line-height:.9;letter-spacing:-.01em;color:var(--espuma);
+ text-shadow:0 3px 0 #000}
+h1 span{color:var(--mad)}
+.rotulo .faixa{display:inline-block;margin-top:10px;padding:5px 14px;border:1.5px solid var(--mad);border-radius:999px;
+ font-size:12px;font-weight:800;letter-spacing:.16em;color:var(--mad);text-transform:uppercase}
+
+/* como funciona: sequencia real */
+.passos{display:flex;align-items:stretch;gap:0;margin:20px 0 18px;padding:0;list-style:none;border:1px solid var(--ln);border-radius:16px;overflow:hidden;background:var(--malte)}
+.passos li{flex:1;padding:11px 8px;font-size:13px;line-height:1.3;color:var(--dim);text-align:center;border-left:1px dashed var(--ln)}
+.passos li:first-child{border-left:none}
+.passos b{display:block;font-family:var(--slab);font-weight:400;font-size:22px;color:var(--mad);line-height:1;margin-bottom:3px}
+.passos strong{color:var(--espuma);font-weight:800}
+
+/* palco + teus pedidos */
+.box{border-radius:18px;padding:14px 16px;margin:0 0 12px;background:var(--malte);border:1px solid var(--ln)}
+.box h3{margin:0 0 6px;font-size:11px;letter-spacing:.2em;color:var(--dim);font-weight:800}
+#palco{background:linear-gradient(135deg,#FF7A1A 0%,#E2560B 100%);border:none;color:#1E0E03}
+#palco h3{color:#3B1A05}
+#palco h3::before{content:"";display:inline-block;width:8px;height:8px;border-radius:50%;background:#1E0E03;margin-right:7px;animation:vivo 1.2s ease-in-out infinite}
+#palco .q{font-family:var(--slab);font-size:26px;line-height:1.05}
+#palco .q i{display:block;font-style:normal;font-family:var(--corpo);font-weight:800;font-size:15px;margin-top:4px;opacity:.8}
+@keyframes vivo{50%{opacity:.25}}
+#meus{border:1.5px solid var(--mad)}
+.meu{display:flex;gap:10px;align-items:baseline;padding:9px 0;border-top:1px dashed var(--ln)}
 .meu:first-of-type{border-top:none}
-.meu .mt{flex:1;font-weight:700}
-.meu .ms{font-size:14px;font-weight:700;color:var(--dim);text-align:right}
-.meu.agora{animation:pisca 1s ease-in-out infinite alternate}
-.meu.agora .ms{color:var(--ok);font-size:16px}
-@keyframes pisca{from{opacity:1}to{opacity:.55}}
-#busca{width:100%;font:inherit;font-size:17px;padding:14px 16px;border-radius:14px;border:1px solid var(--ln);
- background:var(--bar);color:var(--fg);outline:none;position:sticky;top:8px;z-index:3}
-#busca:focus{border-color:var(--ac)}
-ul{list-style:none;margin:10px 0 0;padding:0}
-#lista li{display:flex;align-items:center;gap:12px;padding:14px 4px;border-bottom:1px solid var(--ln);cursor:pointer}
-#lista li:active{background:var(--bar)}
-#lista .t{flex:1;min-width:0}
-#lista .t b{display:block;font-size:18px}
-#lista .t span{display:block;font-size:14px;color:var(--dim);margin-top:1px}
-#lista .mais{flex:none;padding:9px 14px;border-radius:999px;border:2px solid var(--ac);color:var(--ac);
- font-size:14px;font-weight:900;letter-spacing:.06em}
-#lista li.top .mais{background:var(--ac);color:#1a0d04}
-#lista li.trav{cursor:default;opacity:.45}
-#lista li.trav .mais,#lista li.top.trav .mais{background:none;border-color:var(--ln);color:var(--dim);font-size:12px}
-#lista li.gh.ja{color:var(--dim);border-color:var(--ln)}
-#lista .n{flex:none;width:26px;text-align:right;font-size:15px;font-weight:900;color:var(--ac)}
-#lista li.gh.fogo{font-size:15px}
-.passos{display:flex;gap:8px;margin:14px 0 16px;padding:0;list-style:none}
-.passos li{flex:1;background:var(--bar);border:1px solid var(--ln);border-radius:12px;padding:10px 8px;font-size:13px;line-height:1.3;color:var(--dim);text-align:center}
-.passos b{display:block;font-size:20px;color:var(--ac);font-weight:900}
-.passos li strong{color:var(--fg)}
-#chips{display:flex;gap:8px;overflow-x:auto;padding:12px 0 4px;margin:0 -16px;padding-left:16px;padding-right:16px;scrollbar-width:none}
+.meu .mt{flex:1;font-weight:800}
+.meu .ms{font-size:13px;font-weight:800;color:var(--ambar);text-align:right}
+.meu.agora .ms{color:var(--ok);font-size:15px}
+.meu.agora{animation:vivo 1.2s ease-in-out infinite}
+
+/* busca + estilos */
+#busca{width:100%;font:inherit;font-size:17px;padding:15px 16px 15px 44px;border-radius:14px;border:1px solid var(--ln);
+ background:var(--malte) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' fill='none' stroke='%23A89480' stroke-width='2.4'%3E%3Ccircle cx='8.5' cy='8.5' r='6'/%3E%3Cpath d='m13 13 5 5'/%3E%3C/svg%3E") no-repeat 15px 50%;
+ color:var(--espuma);outline:none;position:sticky;top:8px;z-index:3;box-shadow:0 8px 20px rgba(0,0,0,.45)}
+#busca::placeholder{color:var(--dim)}
+#busca:focus{border-color:var(--mad)}
+#chips{display:flex;gap:8px;overflow-x:auto;padding:12px 16px 6px;margin:0 -16px;scrollbar-width:none}
 #chips::-webkit-scrollbar{display:none}
-#chips button{flex:none;padding:9px 14px;font-size:13px;border-radius:999px;letter-spacing:.04em;background:var(--bar)}
-#chips button.on{background:var(--ac);border-color:var(--ac);color:#1a0d04}
-#chips button.f{border-color:var(--ac);color:var(--ac)}
-#chips button.f.on{color:#1a0d04}
-#lista li.gh{display:block;cursor:default;padding:22px 4px 8px;border-bottom:2px solid var(--ac);font-size:13px;font-weight:800;letter-spacing:.12em;color:var(--ac)}
+#chips button{flex:none;padding:9px 14px;font-size:12px;border-radius:999px;letter-spacing:.08em;background:var(--malte);color:var(--dim);border:1px solid var(--ln)}
+#chips button.on{background:var(--espuma);border-color:var(--espuma);color:var(--noite)}
+#chips button.f{color:var(--mad);border-color:var(--mad)}
+#chips button.f.on{background:var(--mad);color:#1E0E03}
+
+/* cardapio de musicas */
+ul{list-style:none;margin:6px 0 0;padding:0}
+#lista li{display:flex;align-items:center;gap:12px;padding:13px 2px;border-bottom:1px solid var(--ln);cursor:pointer}
+#lista li:active{background:var(--malte)}
+#lista .t{flex:1;min-width:0}
+#lista .t b{display:block;font-size:18px;font-weight:800;line-height:1.2}
+#lista .t span{display:block;font-size:14px;color:var(--dim);margin-top:2px}
+#lista .mais{flex:none;padding:9px 15px;border-radius:999px;border:1.5px solid var(--mad);color:var(--mad);font-size:13px;font-weight:800;letter-spacing:.1em}
+#lista .n{flex:none;width:38px;text-align:center;font-family:var(--slab);font-size:26px;line-height:1;color:var(--mad)}
+#lista li.top{padding:14px 2px}
+#lista li.top .mais{background:var(--mad);color:#1E0E03}
+#lista li.top:nth-child(-n+4) .n{font-size:32px}
+#lista li.trav{cursor:default;opacity:.42}
+#lista li.trav .mais,#lista li.top.trav .mais{background:none;border:1.5px dashed var(--dim);color:var(--dim);font-size:11px}
+#lista li.gh{display:block;cursor:default;padding:26px 2px 9px;border-bottom:2px solid var(--espuma);font-family:var(--slab);font-size:17px;letter-spacing:.04em;color:var(--espuma)}
 #lista li.gh:active{background:none}
-#vazio{color:var(--dim);padding:20px 4px;display:none}
-details{margin-top:12px}
-summary{cursor:pointer;font-weight:800;font-size:13px;letter-spacing:.12em;color:var(--dim);padding:6px 0}
-#fila li{padding:7px 0;border-bottom:1px solid var(--ln);font-size:15px}
+#lista li.gh.fogo{color:var(--mad);border-color:var(--mad);font-size:21px}
+#lista li.gh.ja{color:var(--dim);border-color:var(--ln);font-family:var(--corpo);font-size:12px;font-weight:800;letter-spacing:.16em}
+#vazio{color:var(--dim);padding:22px 4px;display:none;font-size:16px}
+
+details{margin-top:16px;border:1px solid var(--ln);border-radius:14px;padding:4px 14px;background:var(--malte)}
+summary{cursor:pointer;font-weight:800;font-size:12px;letter-spacing:.16em;color:var(--dim);padding:10px 0}
+#fila li{padding:8px 0;border-top:1px dashed var(--ln);font-size:15px}
 #fila li em{font-style:normal;color:var(--dim)}
-#sh{position:fixed;inset:0;z-index:20;display:none;align-items:flex-end;justify-content:center;background:rgba(0,0,0,.6)}
-#sh.on{display:flex}
-#sh .in{width:100%;max-width:560px;background:var(--bar);border-top:2px solid var(--ac);border-radius:20px 20px 0 0;
- padding:20px 18px calc(env(safe-area-inset-bottom) + 20px)}
-#sh .mu{font-size:24px;font-weight:900;line-height:1.1}
-#sh .ar{color:var(--dim);font-weight:600;margin-top:2px}
-#sh label{display:block;margin:18px 0 6px;font-size:13px;font-weight:800;letter-spacing:.1em;color:var(--dim)}
-#nome{width:100%;font:inherit;font-size:20px;padding:14px;border-radius:12px;border:1px solid var(--ln);background:var(--bg);color:var(--fg);outline:none}
-#nome:focus{border-color:var(--ac)}
-.bts{display:flex;gap:10px;margin-top:16px}
-button{font:inherit;font-weight:800;border-radius:14px;padding:16px;font-size:17px;border:1px solid var(--ln);background:var(--bg);color:var(--fg);cursor:pointer}
-button.go{flex:1;background:var(--ac);border-color:var(--ac);color:#1a0d04}
-button:disabled{opacity:.5}
-#msg{min-height:20px;margin-top:10px;font-size:14px;font-weight:700;color:var(--ac)}
-#ok{position:fixed;inset:0;z-index:30;display:none;flex-direction:column;align-items:center;justify-content:center;
- text-align:center;padding:30px;background:var(--bg)}
-#ok.on{display:flex}
-#ok .big{font-size:84px;line-height:1}
-#ok h2{font-size:30px;margin:14px 0 6px}
-#ok p{color:var(--dim);font-size:17px;line-height:1.45;margin:0 0 24px;max-width:360px}
-#ok p b{color:var(--fg)}
-#upd{font-size:12px;color:var(--dim);text-align:center;margin-top:22px}
+#upd{font-size:12px;color:var(--dim);text-align:center;margin-top:22px;font-family:var(--tipo)}
 #upd button{font-size:12px;padding:6px 10px;border-radius:8px;margin-left:6px}
+
+button{font:inherit;font-weight:800;border-radius:14px;padding:16px;font-size:17px;border:1px solid var(--ln);background:var(--malte);color:var(--espuma);cursor:pointer}
+button:disabled{opacity:.5}
+
+/* ASSINATURA: o pedido e uma comanda de papel */
+#sh{position:fixed;inset:0;z-index:20;display:none;align-items:flex-end;justify-content:center;background:rgba(10,7,4,.72);backdrop-filter:blur(3px)}
+#sh.on{display:flex}
+.comanda{position:relative;width:100%;max-width:520px;margin:0 10px;background:var(--papel);color:var(--tinta);
+ padding:30px 20px calc(env(safe-area-inset-bottom) + 18px);font-family:var(--tipo);
+ box-shadow:0 -10px 40px rgba(0,0,0,.5);animation:sobe .28s cubic-bezier(.2,.9,.3,1.1)}
+.comanda::before{content:"";position:absolute;left:0;right:0;top:-11px;height:12px;
+ background:linear-gradient(135deg,var(--papel) 50%,transparent 50%) 0 0/16px 12px repeat-x,linear-gradient(225deg,var(--papel) 50%,transparent 50%) 0 0/16px 12px repeat-x}
+@keyframes sobe{from{transform:translateY(40%);opacity:0}}
+.comanda .cab{display:flex;justify-content:space-between;font-size:12px;letter-spacing:.14em;text-transform:uppercase;border-bottom:1.5px dashed var(--tinta);padding-bottom:8px;margin-bottom:14px}
+.comanda .cab b{font-weight:700}
+#sh-m{font-family:var(--slab);font-size:28px;line-height:1.05;color:var(--tinta)}
+#sh-a{font-size:15px;margin-top:4px;opacity:.75}
+.comanda label{display:block;margin:20px 0 4px;font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase}
+#nome{width:100%;font-family:var(--tipo);font-size:22px;font-weight:700;padding:8px 2px;border:none;border-bottom:2px solid var(--tinta);background:transparent;color:var(--tinta);outline:none;border-radius:0}
+#nome::placeholder{color:rgba(42,30,20,.38)}
+#nome:focus{border-color:var(--mad)}
+#msg{min-height:20px;margin-top:10px;font-size:14px;font-weight:700;color:#C2410C}
+.bts{display:flex;gap:10px;margin-top:14px}
+.comanda button{font-family:var(--corpo)}
+#b-nao{background:transparent;border:1.5px solid var(--tinta);color:var(--tinta)}
+button.go{flex:1;background:var(--mad);border:none;color:#1E0E03;letter-spacing:.04em}
+
+/* pedido feito: a comanda carimbada */
+#ok{position:fixed;inset:0;z-index:30;display:none;flex-direction:column;align-items:center;justify-content:center;padding:24px;background:var(--noite)}
+#ok.on{display:flex}
+#ok .comanda{margin:0;max-width:380px;padding:34px 22px 24px;text-align:center;animation:none;transform:rotate(-1.5deg)}
+#ok .comanda::after{content:"";position:absolute;left:0;right:0;bottom:-11px;height:12px;
+ background:linear-gradient(45deg,var(--papel) 50%,transparent 50%) 0 0/16px 12px repeat-x,linear-gradient(-45deg,var(--papel) 50%,transparent 50%) 0 0/16px 12px repeat-x}
+.carimbo{display:inline-block;font-family:var(--slab);font-size:34px;color:var(--mad);border:4px solid var(--mad);border-radius:10px;padding:4px 16px;
+ transform:rotate(-8deg);margin:4px 0 16px;animation:carimba .35s cubic-bezier(.3,1.6,.5,1) both}
+@keyframes carimba{from{transform:rotate(-8deg) scale(2.2);opacity:0}}
+#ok p{font-size:16px;line-height:1.5;margin:0 0 20px}
+#ok p b{font-weight:700}
+#b-okx{flex:none;width:100%;max-width:380px;margin-top:26px}
+@media (prefers-reduced-motion:reduce){*{animation:none!important}}
 </style>
 </head>
 <body>
 <main>
- <h1>BANDA<span>OKE</span></h1>
- <div class="sub">karaokê com banda ao vivo · Horst</div>
+ <header class="rotulo">
+  <div class="de">Horst &amp; Biermann apresenta</div>
+  <h1>BANDA<span>OKE</span></h1>
+  <div class="faixa">karaokê com banda ao vivo</div>
+ </header>
  <ol class="passos">
-  <li><b>1</b><strong>Escolhe</strong> a música e toca em PEDIR</li>
+  <li><b>1</b><strong>Escolhe</strong> a música</li>
   <li><b>2</b>Bota <strong>teu nome</strong></li>
-  <li><b>3</b>Fica de olho: <strong>a banda te chama</strong></li>
+  <li><b>3</b><strong>A banda te chama</strong> no palco</li>
  </ol>
 
  <div class="box" id="palco" hidden><h3>AGORA NO PALCO</h3><div class="q"></div></div>
  <div class="box" id="meus" hidden><h3>TEUS PEDIDOS</h3><div class="l"></div></div>
 
- <input id="busca" type="search" placeholder="procura música ou artista" autocomplete="off">
+ <input id="busca" type="search" placeholder="procura música ou artista" autocomplete="off" aria-label="Procurar música ou artista">
  <div id="chips"></div>
  <ul id="lista"></ul>
  <div id="vazio">Essa a gente não tem ensaiada. Tenta outra!</div>
@@ -109,15 +159,18 @@ button:disabled{opacity:.5}
  <div id="upd"><span id="updt"></span><button id="b-upd">atualizar</button></div>
 </main>
 
-<div id="sh"><div class="in">
- <div class="mu" id="sh-m"></div><div class="ar" id="sh-a"></div>
- <label for="nome">TEU NOME (É ASSIM QUE A GENTE VAI TE CHAMAR)</label>
+<div id="sh"><div class="comanda" role="dialog" aria-labelledby="sh-m">
+ <div class="cab"><b>Comanda de música</b><span>Bandaoke</span></div>
+ <div id="sh-m"></div><div id="sh-a"></div>
+ <label for="nome">Teu nome (é assim que a banda te chama)</label>
  <input id="nome" maxlength="30" autocomplete="given-name" enterkeyhint="send" placeholder="ex: Ju da mesa 7">
  <div id="msg"></div>
- <div class="bts"><button id="b-nao">voltar</button><button class="go" id="b-sim">QUERO CANTAR 🎤</button></div>
+ <div class="bts"><button id="b-nao">voltar</button><button class="go" id="b-sim">QUERO CANTAR</button></div>
 </div></div>
 
-<div id="ok"><div class="big">🎤</div><h2>Pedido feito!</h2><p id="ok-p"></p><button class="go" id="b-okx">&#8249; voltar pra lista</button></div>
+<div id="ok"><div class="comanda"><div class="cab"><b>Comanda de música</b><span>Bandaoke</span></div>
+ <div class="carimbo">NA FILA</div><p id="ok-p"></p></div>
+ <button class="go" id="b-okx">voltar pra lista</button></div>
 
 <script>
 var CAT=[{"t": "(I Can't Get No) Satisfaction", "a": "The Rolling Stones", "s": "POP ROCK INTERNACIONAL"}, {"t": "(You Drive Me) Crazy", "a": "Britney Spears", "s": "POP & DIVAS"}, {"t": "A Estrada", "a": "Cidade Negra", "s": "REGGAE & GOOD VIBES"}, {"t": "A Feira", "a": "O Rappa", "s": "REGGAE & GOOD VIBES"}, {"t": "A Hard Day's Night", "a": "The Beatles", "s": "POP ROCK INTERNACIONAL"}, {"t": "A Irmã do Doctor Robert", "a": "TNT", "s": "ROCK NACIONAL"}, {"t": "A Mais Pedida", "a": "Raimundos", "s": "ROCK NACIONAL"}, {"t": "A Sombra da Maldade", "a": "Cidade Negra", "s": "REGGAE & GOOD VIBES"}, {"t": "A Tal Canção Pra Lua", "a": "Vitor Kley", "s": "REGGAE & GOOD VIBES"}, {"t": "Agora Só Falta Você", "a": "Rita Lee", "s": "ROCK NACIONAL"}, {"t": "Ainda É Cedo", "a": "Legião Urbana", "s": "ROCK NACIONAL"}, {"t": "All I Wanna Do", "a": "Sheryl Crow", "s": "POP & DIVAS"}, {"t": "All My Loving", "a": "The Beatles", "s": "POP ROCK INTERNACIONAL"}, {"t": "All That She Wants", "a": "Ace Of Base", "s": "POP & DIVAS"}, {"t": "Alô, Paixão", "a": "Banda Eva", "s": "BRASILIDADES, AXÉ & MPB"}, {"t": "Amigo Punk", "a": "Graforréia Xilarmônica", "s": "ROCK NACIONAL"}, {"t": "Amor I Love You", "a": "Marisa Monte", "s": "BRASILIDADES, AXÉ & MPB"}, {"t": "Ana Banana", "a": "TNT", "s": "ROCK NACIONAL"}, {"t": "Analua", "a": "Armandinho", "s": "REGGAE & GOOD VIBES"}, {"t": "Andei Só", "a": "Natiruts", "s": "REGGAE & GOOD VIBES"}, {"t": "Anjos", "a": "O Rappa", "s": "REGGAE & GOOD VIBES"}, {"t": "Anna Júlia", "a": "Los Hermanos", "s": "ROCK NACIONAL"}, {"t": "Aonde Quer Que Eu Vá", "a": "Os Paralamas do Sucesso", "s": "ROCK NACIONAL"}, {"t": "Arêrê", "a": "Ivete Sangalo", "s": "BRASILIDADES, AXÉ & MPB"}, {"t": "As It Was", "a": "Harry Styles", "s": "POP & DIVAS"}, {"t": "Aviso Aos Navegantes", "a": "Lulu Santos", "s": "ROCK NACIONAL"}, {"t": "Baby One More Time", "a": "Britney Spears", "s": "POP & DIVAS"}, {"t": "Bang", "a": "Anitta", "s": "FESTA & ZOEIRA"}, {"t": "Basket Case", "a": "Green Day", "s": "POP ROCK INTERNACIONAL"}, {"t": "Beija Eu", "a": "Marisa Monte", "s": "BRASILIDADES, AXÉ & MPB"}, {"t": "Beleza Rara", "a": "Banda Eva", "s": "BRASILIDADES, AXÉ & MPB"}, {"t": "Bete Balanço", "a": "Cazuza", "s": "ROCK NACIONAL"}, {"t": "Blusinha Branca", "a": "Papas da Língua", "s": "ROCK NACIONAL"}, {"t": "Boate Azul", "a": "Bruno & Marrone", "s": "SERTANEJO & ROMÂNTICAS"}, {"t": "Borracho Y Loco", "a": "Vera Loca", "s": "SERTANEJO & ROMÂNTICAS"}, {"t": "By The Way", "a": "Red Hot Chili Peppers", "s": "POP ROCK INTERNACIONAL"}, {"t": "Cachorro Louco", "a": "TNT", "s": "ROCK NACIONAL"}, {"t": "Caleidoscópio", "a": "Os Paralamas do Sucesso", "s": "ROCK NACIONAL"}, {"t": "Californication", "a": "Red Hot Chili Peppers", "s": "POP ROCK INTERNACIONAL"}, {"t": "Camila, Camila", "a": "Nenhum de Nós", "s": "ROCK NACIONAL"}, {"t": "Candy", "a": "Iggy Pop", "s": "POP ROCK INTERNACIONAL"}, {"t": "Carla", "a": "LS Jack", "s": "ROCK NACIONAL"}, {"t": "Carro Velho", "a": "Ivete Sangalo", "s": "BRASILIDADES, AXÉ & MPB"}, {"t": "Cheia de Manias", "a": "Raça Negra", "s": "BRASILIDADES, AXÉ & MPB"}, {"t": "Cilada", "a": "Molejo", "s": "FESTA & ZOEIRA"}, {"t": "Colombina", "a": "Ed Motta", "s": "BRASILIDADES, AXÉ & MPB"}, {"t": "Complicated", "a": "Avril Lavigne", "s": "POP & DIVAS"}, {"t": "Cowboy Fora da Lei", "a": "Raul Seixas", "s": "ROCK NACIONAL"}, {"t": "Crazy Little Thing Called Love", "a": "Queen", "s": "POP ROCK INTERNACIONAL"}, {"t": "Dia Perfeito", "a": "Cachorro Grande", "s": "ROCK NACIONAL"}, {"t": "Do Seu Lado", "a": "Jota Quest", "s": "ROCK NACIONAL"}, {"t": "Don't Look Back In Anger", "a": "Oasis", "s": "POP ROCK INTERNACIONAL"}, {"t": "Dona", "a": "Roupa Nova", "s": "SERTANEJO & ROMÂNTICAS"}, {"t": "Dormi Na Praça", "a": "Bruno & Marrone", "s": "SERTANEJO & ROMÂNTICAS"}, {"t": "Dreams", "a": "Fleetwood Mac", "s": "POP ROCK INTERNACIONAL"}, {"t": "Dressed For Success", "a": "Roxette", "s": "POP & DIVAS"}, {"t": "Dívida", "a": "Ultramen", "s": "ROCK NACIONAL"}, {"t": "Encontrar Alguém", "a": "Jota Quest", "s": "ROCK NACIONAL"}, {"t": "Enquanto Houver Sol", "a": "Titãs", "s": "ROCK NACIONAL"}, {"t": "Epitáfio", "a": "Titãs", "s": "ROCK NACIONAL"}, {"t": "Equalize", "a": "Pitty", "s": "ROCK NACIONAL"}, {"t": "Erva Venenosa", "a": "Rita Lee", "s": "ROCK NACIONAL"}, {"t": "Esperando Na Janela", "a": "Cogumelo Plutão", "s": "ROCK NACIONAL"}, {"t": "Estou na Mão", "a": "TNT", "s": "ROCK NACIONAL"}, {"t": "Eu Sei (Legião Urbana)", "a": "Legião Urbana", "s": "ROCK NACIONAL"}, {"t": "Eu Sei (Papas da Língua)", "a": "Papas da Língua", "s": "ROCK NACIONAL"}, {"t": "Eu Só Quero Um Xodó", "a": "Gilberto Gil", "s": "BRASILIDADES, AXÉ & MPB"}, {"t": "Eu Te Devoro", "a": "Djavan", "s": "BRASILIDADES, AXÉ & MPB"}, {"t": "Eu Tive Um Sonho", "a": "Kid Abelha", "s": "ROCK NACIONAL"}, {"t": "Eva", "a": "Banda Eva", "s": "BRASILIDADES, AXÉ & MPB"}, {"t": "Everybody's Changing", "a": "Keane", "s": "POP ROCK INTERNACIONAL"}, {"t": "Evidências", "a": "Chitãozinho & Xororó", "s": "SERTANEJO & ROMÂNTICAS"}, {"t": "Exagerado", "a": "Cazuza", "s": "ROCK NACIONAL"}, {"t": "Firmamento", "a": "Cidade Negra", "s": "REGGAE & GOOD VIBES"}, {"t": "Flor do Reggae", "a": "Ivete Sangalo", "s": "BRASILIDADES, AXÉ & MPB"}, {"t": "Fogo e Paixão", "a": "Wando", "s": "SERTANEJO & ROMÂNTICAS"}, {"t": "Folhas Secas", "a": "Maskavo", "s": "REGGAE & GOOD VIBES"}, {"t": "Fácil", "a": "Jota Quest", "s": "ROCK NACIONAL"}, {"t": "Fátima", "a": "Capital Inicial", "s": "ROCK NACIONAL"}, {"t": "Garota Nacional", "a": "Skank", "s": "ROCK NACIONAL"}, {"t": "Geração Coca-cola", "a": "Legião Urbana", "s": "ROCK NACIONAL"}, {"t": "Girls Just Want To Have Fun", "a": "Cyndi Lauper", "s": "POP & DIVAS"}, {"t": "Gostava Tanto de Você", "a": "Tim Maia", "s": "BRASILIDADES, AXÉ & MPB"}, {"t": "Graveto", "a": "Marília Mendonça", "s": "SERTANEJO & ROMÂNTICAS"}, {"t": "Hey Joe", "a": "O Rappa", "s": "REGGAE & GOOD VIBES"}, {"t": "Hey Jude", "a": "The Beatles", "s": "POP ROCK INTERNACIONAL"}, {"t": "Hoje", "a": "LUDMILLA", "s": "FESTA & ZOEIRA"}, {"t": "Hoje Eu Quero Sair Só", "a": "Lenine", "s": "BRASILIDADES, AXÉ & MPB"}, {"t": "I Saw You Saying (That You Say That You Saw)", "a": "Raimundos", "s": "ROCK NACIONAL"}, {"t": "Ideologia", "a": "Cazuza", "s": "ROCK NACIONAL"}, {"t": "If it makes you Happy", "a": "Sheryl Crow", "s": "POP & DIVAS"}, {"t": "Infiel", "a": "Marília Mendonça", "s": "SERTANEJO & ROMÂNTICAS"}, {"t": "It Don't Matter", "a": "Donavon Frankenreiter", "s": "REGGAE & GOOD VIBES"}, {"t": "It's My Life", "a": "Bon Jovi", "s": "POP ROCK INTERNACIONAL"}, {"t": "Ive Brussel", "a": "Jorge Ben Jor", "s": "BRASILIDADES, AXÉ & MPB"}, {"t": "Jackie Tequila", "a": "Skank", "s": "ROCK NACIONAL"}, {"t": "Jardins da Babilônia", "a": "Rita Lee", "s": "ROCK NACIONAL"}, {"t": "Learn to Fly", "a": "Foo Fighters", "s": "POP ROCK INTERNACIONAL"}, {"t": "Let It Be", "a": "The Beatles", "s": "POP ROCK INTERNACIONAL"}, {"t": "Leve Com Você", "a": "Natiruts", "s": "REGGAE & GOOD VIBES"}, {"t": "Levitating", "a": "Dua Lipa", "s": "POP & DIVAS"}, {"t": "Liberdade Pra Dentro da Cabeça", "a": "Natiruts", "s": "REGGAE & GOOD VIBES"}, {"t": "Like a Virgin", "a": "Madonna", "s": "POP & DIVAS"}, {"t": "Linger", "a": "The Cranberries", "s": "POP & DIVAS"}, {"t": "Love Me Do", "a": "The Beatles", "s": "POP ROCK INTERNACIONAL"}, {"t": "Lua Cheia (Armandinho)", "a": "Armandinho", "s": "REGGAE & GOOD VIBES"}, {"t": "Lua Cheia (Papas da Língua)", "a": "Papas da Língua", "s": "ROCK NACIONAL"}, {"t": "Lá Vem o Alemão", "a": "Mamonas Assassinas", "s": "FESTA & ZOEIRA"}, {"t": "Lágrimas e Chuva", "a": "Kid Abelha", "s": "ROCK NACIONAL"}, {"t": "Maior Abandonado", "a": "Barão Vermelho", "s": "ROCK NACIONAL"}, {"t": "Malandragem", "a": "Cássia Eller", "s": "ROCK NACIONAL"}, {"t": "Maluco Beleza", "a": "Raul Seixas", "s": "ROCK NACIONAL"}, {"t": "Man! I Feel Like a Woman!", "a": "Shania Twain", "s": "POP & DIVAS"}, {"t": "Mania de Você", "a": "Rita Lee", "s": "ROCK NACIONAL"}, {"t": "Marvin", "a": "Titãs", "s": "ROCK NACIONAL"}, {"t": "Mas Que Nada", "a": "Jorge Ben Jor", "s": "BRASILIDADES, AXÉ & MPB"}, {"t": "Me Abraça", "a": "Banda Eva", "s": "BRASILIDADES, AXÉ & MPB"}, {"t": "Me Adora", "a": "Pitty", "s": "ROCK NACIONAL"}, {"t": "Me Lambe", "a": "Raimundos", "s": "ROCK NACIONAL"}, {"t": "Me leva pra casa", "a": "Alemão Ronaldo", "s": "ROCK NACIONAL"}, {"t": "Menina Veneno", "a": "Ritchie", "s": "ROCK NACIONAL"}, {"t": "Mesmo Que Mude", "a": "Bidê ou Balde", "s": "ROCK NACIONAL"}, {"t": "Meu amigo Pedro", "a": "Raul Seixas", "s": "ROCK NACIONAL"}, {"t": "Meu Bem Querer", "a": "Djavan", "s": "BRASILIDADES, AXÉ & MPB"}, {"t": "Meu Erro", "a": "Os Paralamas do Sucesso", "s": "ROCK NACIONAL"}, {"t": "Meu Reggae É Roots", "a": "Natiruts", "s": "REGGAE & GOOD VIBES"}, {"t": "Meus Bons Amigos", "a": "Barão Vermelho", "s": "ROCK NACIONAL"}, {"t": "Milla", "a": "Netinho", "s": "BRASILIDADES, AXÉ & MPB"}, {"t": "Miss You", "a": "The Rolling Stones", "s": "POP ROCK INTERNACIONAL"}, {"t": "Morena", "a": "Vitor Kley", "s": "REGGAE & GOOD VIBES"}, {"t": "Move By Yourself", "a": "Donavon Frankenreiter", "s": "REGGAE & GOOD VIBES"}, {"t": "Mulher de Fases", "a": "Raimundos", "s": "ROCK NACIONAL"}, {"t": "Música Urbana", "a": "Capital Inicial", "s": "ROCK NACIONAL"}, {"t": "Na Base do Beijo", "a": "Ivete Sangalo", "s": "BRASILIDADES, AXÉ & MPB"}, {"t": "Na Rua, Na Chuva, Na Fazenda", "a": "Kid Abelha", "s": "ROCK NACIONAL"}, {"t": "Na Sua Estante", "a": "Pitty", "s": "ROCK NACIONAL"}, {"t": "No Calor da Hora", "a": "Papas da Língua", "s": "ROCK NACIONAL"}, {"t": "Nunca Mais Voltar", "a": "TNT", "s": "ROCK NACIONAL"}, {"t": "Não Chore Mais", "a": "Gilberto Gil", "s": "BRASILIDADES, AXÉ & MPB"}, {"t": "Não Quero Dinheiro", "a": "Tim Maia", "s": "BRASILIDADES, AXÉ & MPB"}, {"t": "Não Sei", "a": "TNT", "s": "ROCK NACIONAL"}, {"t": "Não Vá Embora", "a": "Marisa Monte", "s": "BRASILIDADES, AXÉ & MPB"}, {"t": "O Amor Não Sabe Esperar", "a": "Os Paralamas do Sucesso", "s": "ROCK NACIONAL"}, {"t": "O Astronauta de Mármore", "a": "Nenhum de Nós", "s": "ROCK NACIONAL"}, {"t": "O Descobridor Dos Sete Mares", "a": "Tim Maia", "s": "BRASILIDADES, AXÉ & MPB"}, {"t": "O Erê", "a": "Cidade Negra", "s": "REGGAE & GOOD VIBES"}, {"t": "O Mundo É Maior Que O Teu Quarto", "a": "TNT", "s": "ROCK NACIONAL"}, {"t": "O Sol", "a": "Vitor Kley", "s": "REGGAE & GOOD VIBES"}, {"t": "O Tempo Não Para", "a": "Cazuza", "s": "ROCK NACIONAL"}, {"t": "Oh, Pretty Woman", "a": "Roy Orbison", "s": "POP ROCK INTERNACIONAL"}, {"t": "Olhos Coloridos", "a": "Sandra de Sá", "s": "BRASILIDADES, AXÉ & MPB"}, {"t": "Onde Você Mora?", "a": "Cidade Negra", "s": "REGGAE & GOOD VIBES"}, {"t": "Outra Noite Que Se Vai", "a": "Armandinho", "s": "REGGAE & GOOD VIBES"}, {"t": "Outro Lugar", "a": "Detonautas", "s": "ROCK NACIONAL"}, {"t": "Ovelha Negra", "a": "Rita Lee", "s": "ROCK NACIONAL"}, {"t": "Overkill", "a": "Men At Work", "s": "POP ROCK INTERNACIONAL"}, {"t": "País Tropical", "a": "Jorge Ben Jor", "s": "BRASILIDADES, AXÉ & MPB"}, {"t": "Pelados Em Santos", "a": "Mamonas Assassinas", "s": "FESTA & ZOEIRA"}, {"t": "Pensamento", "a": "Cidade Negra", "s": "REGGAE & GOOD VIBES"}, {"t": "Pequeno Grande Amor", "a": "Papas da Língua", "s": "ROCK NACIONAL"}, {"t": "Pescador de Ilusões", "a": "O Rappa", "s": "REGGAE & GOOD VIBES"}, {"t": "Pingos de Amor", "a": "Papas da Língua", "s": "ROCK NACIONAL"}, {"t": "Pintura Íntima", "a": "Kid Abelha", "s": "ROCK NACIONAL"}, {"t": "Por Que a Gente É Assim?", "a": "Barão Vermelho", "s": "ROCK NACIONAL"}, {"t": "Por Você", "a": "Barão Vermelho", "s": "ROCK NACIONAL"}, {"t": "Presente De Um Beija-Flor", "a": "Natiruts", "s": "REGGAE & GOOD VIBES"}, {"t": "Pro Dia Nascer Feliz", "a": "Cazuza", "s": "ROCK NACIONAL"}, {"t": "Proibida Pra Mim", "a": "Charlie Brown Jr.", "s": "ROCK NACIONAL"}, {"t": "Provas de Amor", "a": "Titãs", "s": "ROCK NACIONAL"}, {"t": "Pupila", "a": "Vitor Kley", "s": "REGGAE & GOOD VIBES"}, {"t": "Puro Êxtase", "a": "Barão Vermelho", "s": "ROCK NACIONAL"}, {"t": "Quando o Sol Se For", "a": "Detonautas", "s": "ROCK NACIONAL"}, {"t": "Quase Sem Querer", "a": "Legião Urbana", "s": "ROCK NACIONAL"}, {"t": "Que País é Esse", "a": "Capital Inicial", "s": "ROCK NACIONAL"}, {"t": "Queda Livre", "a": "Os Garotin", "s": "BRASILIDADES, AXÉ & MPB"}, {"t": "Quero Ser Feliz Também", "a": "Natiruts", "s": "REGGAE & GOOD VIBES"}, {"t": "Reggae Das Tramanda", "a": "Armandinho", "s": "REGGAE & GOOD VIBES"}, {"t": "Rehab", "a": "Amy Winehouse", "s": "POP & DIVAS"}, {"t": "Robocop Gay", "a": "Mamonas Assassinas", "s": "FESTA & ZOEIRA"}, {"t": "Rock N' Roll All Nite", "a": "KISS", "s": "POP ROCK INTERNACIONAL"}, {"t": "Rosa Norte", "a": "Armandinho", "s": "REGGAE & GOOD VIBES"}, {"t": "Rádio Pirata", "a": "RPM", "s": "ROCK NACIONAL"}, {"t": "Saideira", "a": "Skank", "s": "ROCK NACIONAL"}, {"t": "Sandra Rosa Madalena", "a": "Sidney Magal", "s": "FESTA & ZOEIRA"}, {"t": "Sangue Latino", "a": "Secos & Molhados", "s": "ROCK NACIONAL"}, {"t": "Scar Tissue", "a": "Red Hot Chili Peppers", "s": "POP ROCK INTERNACIONAL"}, {"t": "Segredos", "a": "Frejat", "s": "ROCK NACIONAL"}, {"t": "Será", "a": "Legião Urbana", "s": "ROCK NACIONAL"}, {"t": "Sina", "a": "Djavan", "s": "BRASILIDADES, AXÉ & MPB"}, {"t": "Sinceramente", "a": "Cachorro Grande", "s": "ROCK NACIONAL"}, {"t": "Ska", "a": "Os Paralamas do Sucesso", "s": "ROCK NACIONAL"}, {"t": "Somewhere Only We Know", "a": "Keane", "s": "POP ROCK INTERNACIONAL"}, {"t": "Sonífera Ilha", "a": "Titãs", "s": "ROCK NACIONAL"}, {"t": "Sorri, Sou Rei", "a": "Natiruts", "s": "REGGAE & GOOD VIBES"}, {"t": "Sossego", "a": "Tim Maia", "s": "BRASILIDADES, AXÉ & MPB"}, {"t": "Sozinho", "a": "Caetano Veloso", "s": "BRASILIDADES, AXÉ & MPB"}, {"t": "Sábado a Noite", "a": "Cidade Negra", "s": "REGGAE & GOOD VIBES"}, {"t": "Só Hoje", "a": "Jota Quest", "s": "ROCK NACIONAL"}, {"t": "Só Love", "a": "Claudinho e Buchecha", "s": "FESTA & ZOEIRA"}, {"t": "Só Você", "a": "Fábio Jr.", "s": "SERTANEJO & ROMÂNTICAS"}, {"t": "Taj Mahal", "a": "Jorge Ben Jor", "s": "BRASILIDADES, AXÉ & MPB"}, {"t": "Te Ver", "a": "Skank", "s": "ROCK NACIONAL"}, {"t": "Tempo Perdido", "a": "Legião Urbana", "s": "ROCK NACIONAL"}, {"t": "Times Like These", "a": "Foo Fighters", "s": "POP ROCK INTERNACIONAL"}, {"t": "Toda Forma de Amor", "a": "Lulu Santos", "s": "ROCK NACIONAL"}, {"t": "Torn", "a": "Natalie Imbruglia", "s": "POP & DIVAS"}, {"t": "Tremendo Vacilão", "a": "Perlla", "s": "FESTA & ZOEIRA"}, {"t": "Três Lados", "a": "Skank", "s": "ROCK NACIONAL"}, {"t": "Tão Seu", "a": "Skank", "s": "ROCK NACIONAL"}, {"t": "Um Anjo do Céu", "a": "Maskavo", "s": "REGGAE & GOOD VIBES"}, {"t": "Um Certo Alguém", "a": "Lulu Santos", "s": "ROCK NACIONAL"}, {"t": "Uma Brasileira", "a": "Os Paralamas do Sucesso", "s": "ROCK NACIONAL"}, {"t": "Vai Malandra", "a": "Anitta", "s": "FESTA & ZOEIRA"}, {"t": "Valerie", "a": "Amy Winehouse", "s": "POP & DIVAS"}, {"t": "Vamos Fugir", "a": "Gilberto Gil", "s": "BRASILIDADES, AXÉ & MPB"}, {"t": "Vapor Barato", "a": "O Rappa", "s": "REGGAE & GOOD VIBES"}, {"t": "Vem Meu Amor", "a": "Banda Eva", "s": "BRASILIDADES, AXÉ & MPB"}, {"t": "Vem Pra Cá", "a": "Papas da Língua", "s": "ROCK NACIONAL"}, {"t": "Viajar", "a": "Papas da Língua", "s": "ROCK NACIONAL"}, {"t": "Vira-Vira", "a": "Mamonas Assassinas", "s": "FESTA & ZOEIRA"}, {"t": "Vital e Sua Moto", "a": "Os Paralamas do Sucesso", "s": "ROCK NACIONAL"}, {"t": "Você", "a": "Tim Maia", "s": "BRASILIDADES, AXÉ & MPB"}, {"t": "Vou Deixar", "a": "Skank", "s": "ROCK NACIONAL"}, {"t": "Várias Queixas", "a": "Gilsons", "s": "BRASILIDADES, AXÉ & MPB"}, {"t": "W/Brasil (Chama o Síndico)", "a": "Jorge Ben Jor", "s": "BRASILIDADES, AXÉ & MPB"}, {"t": "Wannabe", "a": "Spice Girls", "s": "POP & DIVAS"}, {"t": "Watermelon Sugar", "a": "Harry Styles", "s": "POP & DIVAS"}, {"t": "What's Up", "a": "4 Non Blondes", "s": "POP ROCK INTERNACIONAL"}, {"t": "When I Come Around", "a": "Green Day", "s": "POP ROCK INTERNACIONAL"}, {"t": "Whisky A Go Go", "a": "Roupa Nova", "s": "SERTANEJO & ROMÂNTICAS"}, {"t": "Wonderwall", "a": "Oasis", "s": "POP ROCK INTERNACIONAL"}, {"t": "You Give Love A Bad Name", "a": "Bon Jovi", "s": "POP ROCK INTERNACIONAL"}, {"t": "You Got it", "a": "Roy Orbison", "s": "POP ROCK INTERNACIONAL"}, {"t": "Zombie", "a": "The Cranberries", "s": "POP & DIVAS"}, {"t": "Zóio de Lula", "a": "Charlie Brown Jr.", "s": "ROCK NACIONAL"}, {"t": "À francesa", "a": "Marina Lima", "s": "BRASILIDADES, AXÉ & MPB"}, {"t": "À Sua Maneira", "a": "Capital Inicial", "s": "ROCK NACIONAL"}, {"t": "É Preciso Saber Viver", "a": "Titãs", "s": "ROCK NACIONAL"}, {"t": "É Tarde Demais", "a": "Raça Negra", "s": "BRASILIDADES, AXÉ & MPB"}, {"t": "É Uma Partida de Futebol", "a": "Skank", "s": "ROCK NACIONAL"}, {"t": "Óculos", "a": "Os Paralamas do Sucesso", "s": "ROCK NACIONAL"}],ESTILOS=["ROCK NACIONAL", "POP ROCK INTERNACIONAL", "POP & DIVAS", "BRASILIDADES, AXÉ & MPB", "REGGAE & GOOD VIBES", "SERTANEJO & ROMÂNTICAS", "FESTA & ZOEIRA"],RANK0=["Anna Júlia", "Mulher de Fases", "Vou Deixar", "Cheia de Manias", "Evidências", "Garota Nacional", "Menina Veneno", "Tempo Perdido", "Só Love", "Whisky A Go Go", "Sandra Rosa Madalena", "Fogo e Paixão", "Borracho Y Loco", "Malandragem", "Bete Balanço", "Carla", "Puro Êxtase", "Meu Erro", "Por Você", "Uma Brasileira", "Olhos Coloridos", "Toda Forma de Amor", "Sossego", "Eva", "Milla", "Segredos", "A Tal Canção Pra Lua", "Onde Você Mora?", "Te Ver", "W/Brasil (Chama o Síndico)"],FILTRO=lsx_('bk_est')||'',NTOP=20;
@@ -169,7 +222,7 @@ function G(i){return document.getElementById(i)}
 function norm(t){return String(t).normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase()}
 
 function chips(){
- var h='<button class="f'+(FILTRO==='TOP'?' on':'')+'" data-s="TOP">🔥 MAIS PEDIDAS</button>';
+ var h='<button class="f'+(FILTRO==='TOP'?' on':'')+'" data-s="TOP">MAIS PEDIDAS</button>';
  h+='<button data-s=""'+(FILTRO?'':' class="on"')+'>TODAS</button>';
  ESTILOS.forEach(function(s){h+='<button data-s="'+esc(s)+'"'+(FILTRO===s?' class="on"':'')+'>'+esc(s)+'</button>'});
  G('chips').innerHTML=h;
@@ -191,7 +244,7 @@ function pintaLista(){
  if(!q&&(FILTRO===''||FILTRO==='TOP')){
   var top=[],ix={};CAT.forEach(function(c,i){ix[c.t]=i});
   ranking().forEach(function(t){var i=ix[t];if(i!=null&&ok(CAT[i])&&trava(t)!=='JÁ TOCOU'&&top.length<NTOP)top.push(i)});
-  if(top.length){h+='<li class="gh fogo">🔥 AS MAIS PEDIDAS DA NOITE</li>';
+  if(top.length){h+='<li class="gh fogo">As mais pedidas</li>';
    top.forEach(function(i,k){n++;h+=linha(CAT[i],i,k+1,true)})}
  }
  if(FILTRO!=='TOP'||q)ESTILOS.forEach(function(s){
@@ -201,7 +254,7 @@ function pintaLista(){
   if(L.length){h+='<li class="gh">'+esc(s)+'</li>';L.forEach(function(i){n++;h+=linha(CAT[i],i,0,false)})}
  });
  var ja=[];CAT.forEach(function(c,i){if(ok(c)&&trava(c.t)==='JÁ TOCOU')ja.push(i)});
- if(ja.length){h+='<li class="gh ja">JÁ TOCOU HOJE · ESCOLHE OUTRA 😉</li>';ja.forEach(function(i){n++;h+=linha(CAT[i],i,0,false)})}
+ if(ja.length){h+='<li class="gh ja">JÁ TOCOU HOJE · ESCOLHE OUTRA</li>';ja.forEach(function(i){n++;h+=linha(CAT[i],i,0,false)})}
  G('lista').innerHTML=h;G('vazio').style.display=n?'none':'block';
 }
 G('chips').addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;
@@ -264,7 +317,7 @@ G('b-sim').onclick=function(){
  ler().then(function(evs){ST=estado(evs);pinta();var tv=trava(m);
   if(tv)throw {trav:tv};return manda({k:'ped',id:id,m:m,n:n,d:DEV})}).then(function(){
   lsx('bk_nome',n);MEUS.push({id:id,m:m,t:Date.now()});lsx('bk_meus',JSON.stringify(MEUS));
-  fecha();G('ok-p').innerHTML='<b>'+esc(m)+'</b> tá na fila no nome de <b>'+esc(n)+'</b>.<br>Fica ligado que a banda chama!';
+  fecha();G('ok-p').innerHTML='<b>'+esc(m)+'</b><br>no nome de <b>'+esc(n)+'</b><br><br>Fica de olho no palco: a banda te chama.';
   G('ok').classList.add('on');atualiza();
  }).catch(function(x){G('msg').textContent=x&&x.trav?(x.trav==='NA FILA'?'Essa alguém já pediu e tá na fila! Escolhe outra.':'Essa já tocou hoje! Escolhe outra.'):'Não foi. Confere a internet e tenta de novo.'})
  .then(function(){bt.disabled=false});
