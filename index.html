@@ -40,6 +40,9 @@ ul{list-style:none;margin:10px 0 0;padding:0}
 #lista .mais{flex:none;padding:9px 14px;border-radius:999px;border:2px solid var(--ac);color:var(--ac);
  font-size:14px;font-weight:900;letter-spacing:.06em}
 #lista li.top .mais{background:var(--ac);color:#1a0d04}
+#lista li.trav{cursor:default;opacity:.45}
+#lista li.trav .mais,#lista li.top.trav .mais{background:none;border-color:var(--ln);color:var(--dim);font-size:12px}
+#lista li.gh.ja{color:var(--dim);border-color:var(--ln)}
 #lista .n{flex:none;width:26px;text-align:right;font-size:15px;font-weight:900;color:var(--ac)}
 #lista li.gh.fogo{font-size:15px}
 .passos{display:flex;gap:8px;margin:14px 0 16px;padding:0;list-style:none}
@@ -174,23 +177,31 @@ function chips(){
 /* ranking: o mestre publica (rk) com o historico real; sem isso vale a lista da banda */
 function ranking(){return (ST&&ST.rk&&ST.rk.length)?ST.rk:RANK0}
 function pos(t){var r=ranking(),k=r.indexOf(t);return k<0?999:k}
-function linha(c,i,n,top){return '<li data-i="'+i+'"'+(top?' class="top"':'')+'>'+(n?'<span class="n">'+n+'</span>':'')+
- '<div class="t"><b>'+esc(c.t)+'</b><span>'+esc(c.a)+'</span></div><div class="mais">PEDIR</div></li>'}
+/* trava: musica na fila ou ja cantada hoje nao pode ser pedida de novo */
+function trava(t){if(!ST)return '';var L=ST.agora.concat(ST.fila);
+ for(var k=0;k<L.length;k++)if(L[k].m===t)return 'NA FILA';
+ for(k=0;k<ST.feitas.length;k++)if(ST.feitas[k].m===t&&ST.feitas[k].s==='feita')return 'JÁ TOCOU';
+ return ''}
+function linha(c,i,n,top){var tv=trava(c.t),cl=(top?'top':'')+(tv?' trav':'');
+ return '<li data-i="'+i+'"'+(cl?' class="'+cl.trim()+'"':'')+'>'+(n?'<span class="n">'+n+'</span>':'')+
+ '<div class="t"><b>'+esc(c.t)+'</b><span>'+esc(c.a)+'</span></div><div class="mais">'+(tv||'PEDIR')+'</div></li>'}
 function pintaLista(){
  var q=norm(G('busca').value.trim()),oc=ST?ST.oc:[],n=0,h='';
  function ok(c){return oc.indexOf(c.t)<0&&(!q||norm(c.t+' '+c.a).indexOf(q)>=0)}
  if(!q&&(FILTRO===''||FILTRO==='TOP')){
   var top=[],ix={};CAT.forEach(function(c,i){ix[c.t]=i});
-  ranking().forEach(function(t){var i=ix[t];if(i!=null&&ok(CAT[i])&&top.length<NTOP)top.push(i)});
+  ranking().forEach(function(t){var i=ix[t];if(i!=null&&ok(CAT[i])&&trava(t)!=='JÁ TOCOU'&&top.length<NTOP)top.push(i)});
   if(top.length){h+='<li class="gh fogo">🔥 AS MAIS PEDIDAS DA NOITE</li>';
    top.forEach(function(i,k){n++;h+=linha(CAT[i],i,k+1,true)})}
  }
  if(FILTRO!=='TOP'||q)ESTILOS.forEach(function(s){
   if(FILTRO&&FILTRO!=='TOP'&&FILTRO!==s&&!q)return;
-  var L=[];CAT.forEach(function(c,i){if(c.s===s&&ok(c))L.push(i)});
+  var L=[];CAT.forEach(function(c,i){if(c.s===s&&ok(c)&&trava(c.t)!=='JÁ TOCOU')L.push(i)});
   L.sort(function(a,b){return (pos(CAT[a].t)-pos(CAT[b].t))||CAT[a].t.localeCompare(CAT[b].t,'pt')});
   if(L.length){h+='<li class="gh">'+esc(s)+'</li>';L.forEach(function(i){n++;h+=linha(CAT[i],i,0,false)})}
  });
+ var ja=[];CAT.forEach(function(c,i){if(ok(c)&&trava(c.t)==='JÁ TOCOU')ja.push(i)});
+ if(ja.length){h+='<li class="gh ja">JÁ TOCOU HOJE · ESCOLHE OUTRA 😉</li>';ja.forEach(function(i){n++;h+=linha(CAT[i],i,0,false)})}
  G('lista').innerHTML=h;G('vazio').style.display=n?'none':'block';
 }
 G('chips').addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;
@@ -236,7 +247,7 @@ setInterval(function(){if(!document.hidden&&pendentes())atualiza()},45000);
 document.addEventListener('visibilitychange',function(){if(!document.hidden)atualiza()});
 G('b-upd').onclick=atualiza;
 G('busca').addEventListener('input',pintaLista);
-G('lista').addEventListener('click',function(e){var li=e.target.closest('li[data-i]');if(!li)return;
+G('lista').addEventListener('click',function(e){var li=e.target.closest('li[data-i]');if(!li||li.classList.contains('trav'))return;
  ESC=CAT[+li.dataset.i];G('sh-m').textContent=ESC.t;G('sh-a').textContent=ESC.a;G('msg').textContent='';
  G('nome').value=lsx('bk_nome')||'';G('sh').classList.add('on');setTimeout(function(){G('nome').focus()},80)});
 function fecha(){G('sh').classList.remove('on');ESC=null}
@@ -249,11 +260,13 @@ G('b-sim').onclick=function(){
  if(pendentes()>=MAX_PEND){G('msg').textContent='Tu já tem '+MAX_PEND+' pedidos na fila. Espera cantar um!';return}
  var bt=this;bt.disabled=true;G('msg').textContent='enviando...';
  var id=novoId(),m=ESC.t;
- manda({k:'ped',id:id,m:m,n:n,d:DEV}).then(function(){
+ /* confere a fila na hora: alguem pode ter pedido a mesma agorinha */
+ ler().then(function(evs){ST=estado(evs);pinta();var tv=trava(m);
+  if(tv)throw {trav:tv};return manda({k:'ped',id:id,m:m,n:n,d:DEV})}).then(function(){
   lsx('bk_nome',n);MEUS.push({id:id,m:m,t:Date.now()});lsx('bk_meus',JSON.stringify(MEUS));
   fecha();G('ok-p').innerHTML='<b>'+esc(m)+'</b> tá na fila no nome de <b>'+esc(n)+'</b>.<br>Fica ligado que a banda chama!';
   G('ok').classList.add('on');atualiza();
- }).catch(function(){G('msg').textContent='Não foi. Confere a internet e tenta de novo.'})
+ }).catch(function(x){G('msg').textContent=x&&x.trav?(x.trav==='NA FILA'?'Essa alguém já pediu e tá na fila! Escolhe outra.':'Essa já tocou hoje! Escolhe outra.'):'Não foi. Confere a internet e tenta de novo.'})
  .then(function(){bt.disabled=false});
 };
 G('b-okx').onclick=function(){G('ok').classList.remove('on');scrollTo(0,0)};

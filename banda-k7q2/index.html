@@ -26045,8 +26045,9 @@ function norm(t){return String(t).normalize('NFD').replace(/[̀-ͯ]/g,'').toLowe
 var ESTILOS=["ROCK NACIONAL", "POP ROCK INTERNACIONAL", "POP & DIVAS", "BRASILIDADES, AXÉ & MPB", "REGGAE & GOOD VIBES", "SERTANEJO & ROMÂNTICAS", "FESTA & ZOEIRA"],REPF=lsx('bk_rest')||'';
 var ORDA=M.map(function(m,i){return i}).sort(function(a,b){var d=ESTILOS.indexOf(M[a].s)-ESTILOS.indexOf(M[b].s);return d||M[a].t.localeCompare(M[b].t,'pt')});
 function artista(i){var e=G('m'+i).querySelector('h2 em');return e?e.textContent:''}
-var CNT={};
+var CNT={},HJ={};
 function rep(){
+ HJ={};ST.feitas.forEach(function(q){if(q.s==='feita')HJ[q.m]='já tocou hoje'});ST.agora.concat(ST.fila).forEach(function(q){HJ[q.m]='na fila'});
  CNT={};contagem('').forEach(function(c){CNT[c.m]=c.n});
  var q=norm(G('rep-busca').value.trim()),h='',gs='';
  var c='<button data-s=""'+(REPF?'':' class="on"')+'>TODAS ('+M.length+')</button>';
@@ -26058,7 +26059,7 @@ function rep(){
   if(M[i].s!==gs){gs=M[i].s;h+='<div class="rg">'+esc(gs)+'</div>'}
   var oc=ST.oc.indexOf(M[i].t)>=0;
   var nc=CNT[M[i].t]||0;
-  h+='<div class="r'+(oc?' oc':'')+'" data-i="'+i+'"><div class="tx" data-a="abre"><b>'+esc(M[i].t)+'</b><span>'+esc(a)+'<em>'+esc(tomDe(M[i].t))+'</em>'+(nc?'<i>· pedida '+nc+'×</i>':'')+'</span></div>'+
+  h+='<div class="r'+(oc?' oc':'')+'" data-i="'+i+'"><div class="tx" data-a="abre"><b>'+esc(M[i].t)+'</b><span>'+esc(a)+'<em>'+esc(tomDe(M[i].t))+'</em>'+(nc?'<i>· pedida '+nc+'×</i>':'')+(HJ[M[i].t]?'<i style="color:var(--ac)">· '+HJ[M[i].t]+'</i>':'')+'</span></div>'+
    '<button data-a="add">+ FILA</button><button class="olho'+(oc?' off':'')+'" data-a="olho">'+(oc?'OCULTA':'NO QR')+'</button></div>'});
  G('rep-l').innerHTML=h||'<div class="vz">nada com esse nome</div>';
 }
