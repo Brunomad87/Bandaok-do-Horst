@@ -25946,8 +25946,8 @@ function estado(evs){
 var IDX={};M.forEach(function(m,i){IDX[m.t]=i});
 var EVS=[],VISTO={},PEND=[],ST=estado([]),CURQ=null,ABA=lsx('bk_aba')||'fila',carregou=false;
 var RANK0=["Anna Júlia", "Mulher de Fases", "Vou Deixar", "Cheia de Manias", "Evidências", "Garota Nacional", "Menina Veneno", "Tempo Perdido", "Só Love", "Whisky A Go Go", "Sandra Rosa Madalena", "Fogo e Paixão", "Borracho Y Loco", "Malandragem", "Bete Balanço", "Carla", "Puro Êxtase", "Meu Erro", "Por Você", "Uma Brasileira", "Olhos Coloridos", "Toda Forma de Amor", "Sossego", "Eva", "Milla", "Segredos", "A Tal Canção Pra Lua", "Onde Você Mora?", "Te Ver", "W/Brasil (Chama o Síndico)"];
-/* MESTRE: so o tablet do Mad chama/pula/zera/oculta. Liga com ?mestre=1 no link (fica salvo), desliga com ?mestre=0 */
-var MESTRE=(function(){var q=null;try{q=new URLSearchParams(location.search).get('mestre')}catch(e){}
+/* MESTRE (selo MAD): so o tablet do Mad chama/pula/zera/oculta. Liga com ?mad=1 (ou ?mestre=1) no link (fica salvo), desliga com ?mestre=0 */
+var MESTRE=(function(){var q=null;try{var u=new URLSearchParams(location.search);q=u.get('mad');if(q===null)q=u.get('mestre')}catch(e){}
  if(q==='1')lsx('bk_mestre','1');else if(q==='0')lsx('bk_mestre','0');return lsx('bk_mestre')==='1'})();
 document.body.classList.toggle('mestre',MESTRE);
 /* ---- historico permanente (localStorage): todo pedido que passa, mesmo depois do NOVA NOITE ---- */
@@ -26001,7 +26001,7 @@ function marca(id,s){if(MESTRE&&ST.Q[id]&&ST.Q[id].s!==s)age({k:'st',id:id,s:s})
 /* ---- conexao: SSE ao vivo + conferida periodica ---- */
 var es=null,vivo=false;
 function rede(){var r=G('rede');r.classList.toggle('on',vivo);r.querySelector('span').textContent=vivo?'ao vivo':'reconectando… (os pedidos esperam no servidor)';
- G('papel').textContent=MESTRE?'MESTRE':'SEGUINDO O MESTRE'}
+ G('papel').textContent=MESTRE?'MAD':'BANDA'}
 function conecta(){
  try{es=new EventSource(SRV+'/'+TOPICO+'/sse?since=all')}catch(e){return}
  es.onopen=function(){vivo=true;rede()};
