@@ -7,6 +7,7 @@ BANDA = 'banda-k7q2'
 P = json.load(open(os.path.join(D, 'dados.json'), encoding='utf8'))
 sys.path.insert(0, D)
 from estilos import ORDEM
+from ranking import TOP
 comum = open(os.path.join(D, 'comum.js'), encoding='utf8').read().replace('__TOPICO__', TOPICO)
 engine = open(os.path.join(D, 'engine.js'), encoding='utf8').read()
 import html
@@ -15,9 +16,9 @@ cat.sort(key=lambda c: c['t'].lower())
 js = lambda o: json.dumps(o, ensure_ascii=False).replace('</', '<\\/')
 
 pub = open(os.path.join(D, 'pub.tpl.html'), encoding='utf8').read()
-pub = pub.replace('__CATALOGO__', js(cat)).replace('__ESTILOS__', js(ORDEM)).replace('__COMUM__', comum)
+pub = pub.replace('__RANK__', js(TOP)).replace('__CATALOGO__', js(cat)).replace('__ESTILOS__', js(ORDEM)).replace('__COMUM__', comum)
 banda = open(os.path.join(D, 'banda.tpl.html'), encoding='utf8').read()
-for k, v in [('__ESTILO__', P['style']), ('__SECOES__', '\n'.join(P['secs'])), ('__M__', js(P['M'])), ('__ESTILOS__', js(ORDEM)),
+for k, v in [('__RANK__', js(TOP)), ('__ESTILO__', P['style']), ('__SECOES__', '\n'.join(P['secs'])), ('__M__', js(P['M'])), ('__ESTILOS__', js(ORDEM)),
              ('__ENGINE__', engine), ('__COMUM__', comum), ('__URL_PUB__', URL_PUB)]:
     banda = banda.replace(k, v)
 os.makedirs(os.path.join(OUT, BANDA), exist_ok=True)

@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="robots" content="noindex">
-<title>BANDAOK · banda</title>
+<title>BANDAOKE · banda</title>
 <script>try{var _t0=localStorage.getItem('mad_tema');document.documentElement.dataset.t=(_t0===null?'dark':_t0)}catch(e){document.documentElement.dataset.t='dark'}</script>
 <style>
 html{scroll-padding-top:env(safe-area-inset-top,0px)}
@@ -215,10 +215,30 @@ body:not(.aberto) #b-play,body:not(.aberto) #b-tom{display:none}
 #sh .bts{display:flex;gap:8px;margin-top:12px}
 #sh .bts button{flex:1}
 #sh .bts .ok{background:var(--ac);border-color:var(--ac);color:#fff}
+/* ---- mestre x guris ---- */
+#rede b{margin-left:auto;padding:3px 8px;border-radius:6px;border:1px solid var(--ln);letter-spacing:.06em}
+body.mestre #rede b{background:var(--ac);border-color:var(--ac);color:#fff}
+body:not(.mestre) #b-noite,body:not(.mestre) .r .olho{display:none}
+body:not(.mestre).seg #b-ant,body:not(.mestre).seg #b-prox{visibility:hidden}
+/* ---- historico ---- */
+#h-top{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:6px 0 4px}
+#h-noite{flex:1;min-width:160px;font:inherit;font-size:15px;padding:10px;border-radius:10px;border:1px solid var(--ln);background:var(--bar);color:var(--fg)}
+#h-res{font-size:14px;color:var(--dim);margin:8px 4px}
+.hr{display:flex;align-items:center;gap:10px;padding:10px 6px;border-bottom:1px solid var(--ln)}
+.hr .p{min-width:28px;text-align:right;color:var(--dim);font-size:14px}
+.hr .tx{flex:1;min-width:0;cursor:pointer}
+.hr .tx b{display:block;font-size:18px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hr .tx span{font-size:13px;color:var(--dim)}
+.hr .c{font-size:22px;font-weight:900;color:var(--ac);min-width:44px;text-align:right}
+.hr .bar{height:4px;background:var(--ac);border-radius:2px;margin-top:5px;opacity:.6}
+#h-bk{margin-top:22px;display:flex;flex-direction:column;gap:8px}
+#h-bk p{margin:0;font-size:13px;color:var(--dim)}
+#h-txt{width:100%;height:110px;font:12px/1.3 monospace;padding:8px;border-radius:8px;border:1px solid var(--ln);background:var(--bar);color:var(--fg)}
+.r .tx span i{font-style:normal;color:var(--dim);margin-left:6px}
 </style></head><body>
 <div id="bar">
  <button id="b-set">&#8249; FILA<span class="bd" hidden></span></button>
- <div id="now">BANDAOK</div>
+ <div id="now">BANDAOKE</div>
  <button id="b-play">&#9654;</button>
  <button id="b-menos">A&minus;</button><button id="b-mais">A+</button>
  <button id="b-tom">TOM</button>
@@ -226,9 +246,16 @@ body:not(.aberto) #b-play,body:not(.aberto) #b-tom{display:none}
  <button id="b-tema"><span class="ic"></span></button>
 </div>
 <div id="lst">
- <div id="tabs"><button data-a="fila">FILA <span id="nf"></span></button><button data-a="rep">REPERTÓRIO</button></div>
- <div id="rede"><i></i><span>conectando…</span></div>
+ <div id="tabs"><button data-a="fila">FILA <span id="nf"></span></button><button data-a="rep">REPERTÓRIO</button><button data-a="hist">HISTÓRICO</button></div>
+ <div id="rede"><i></i><span>conectando…</span><b id="papel"></b></div>
  <div id="v-fila"></div>
+ <div id="v-hist" hidden>
+  <div id="h-top"><select id="h-noite"></select></div>
+  <div id="h-res"></div><div id="h-l"></div>
+  <div id="h-bk"><p>O histórico fica guardado neste tablet e não some com o NOVA NOITE. Copia o backup de vez em quando e guarda (ou manda pro Claude).</p>
+   <button id="h-cp">COPIAR BACKUP</button><button id="h-imp">COLAR BACKUP DE OUTRO TABLET</button>
+   <textarea id="h-txt" hidden placeholder="cola o backup aqui e toca em JUNTAR"></textarea><button id="h-ok" hidden>JUNTAR AO HISTÓRICO</button></div>
+ </div>
  <div id="v-rep" hidden><input id="rep-busca" type="search" placeholder="procurar" autocomplete="off"><div id="rep-ch"></div><div id="rep-l"></div></div>
  <div id="pe">
   <div class="lk">link do público: <b>https://brunomad87.github.io/Bandaok-do-Horst/</b></div>
@@ -25896,33 +25923,68 @@ function manda(e){
  return fetch(SRV+'/'+TOPICO,{method:'POST',body:JSON.stringify(e)}).then(function(r){
   if(!r.ok)throw new Error('http '+r.status);return r.json()});
 }
+/* st/reset/oculta/rank so valem vindos do tablet MESTRE (ms:1): os guris so pedem (ped) */
 function estado(evs){
- var Q={},ord=[],oc=[];
+ var Q={},ord=[],oc=[],rk=null;
  evs.forEach(function(e){
+  if(e.k==='ped'){if(e.id&&!Q[e.id]){Q[e.id]={id:e.id,m:String(e.m||'').slice(0,80),n:String(e.n||'').slice(0,30),d:e.d,t:e._t,s:'fila'};ord.push(e.id)}return}
+  if(!e.ms)return;
   if(e.k==='reset'){Q={};ord=[]}
-  else if(e.k==='ped'){if(e.id&&!Q[e.id]){Q[e.id]={id:e.id,m:String(e.m||'').slice(0,80),n:String(e.n||'').slice(0,30),d:e.d,t:e._t,s:'fila'};ord.push(e.id)}}
   else if(e.k==='st'){if(Q[e.id]){Q[e.id].s=e.s;Q[e.id].ts=e._t}}
   else if(e.k==='oculta'){oc=Array.isArray(e.l)?e.l:[]}
+  else if(e.k==='rank'){rk=Array.isArray(e.l)?e.l:null}
  });
  var L=ord.map(function(i){return Q[i]});
  return {Q:Q,
   agora:L.filter(function(q){return q.s==='agora'}),
   fila:L.filter(function(q){return q.s==='fila'}),
   feitas:L.filter(function(q){return q.s==='feita'||q.s==='pulada'}).sort(function(a,b){return (b.ts||0)-(a.ts||0)}),
-  oc:oc};
+  oc:oc,rk:rk};
 }
 
 /* ---------------- BANDAOK: lado da banda ---------------- */
 var IDX={};M.forEach(function(m,i){IDX[m.t]=i});
 var EVS=[],VISTO={},PEND=[],ST=estado([]),CURQ=null,ABA=lsx('bk_aba')||'fila',carregou=false;
+var RANK0=["Anna Júlia", "Mulher de Fases", "Vou Deixar", "Cheia de Manias", "Evidências", "Garota Nacional", "Menina Veneno", "Tempo Perdido", "Só Love", "Whisky A Go Go", "Sandra Rosa Madalena", "Fogo e Paixão", "Borracho Y Loco", "Malandragem", "Bete Balanço", "Carla", "Puro Êxtase", "Meu Erro", "Por Você", "Uma Brasileira", "Olhos Coloridos", "Toda Forma de Amor", "Sossego", "Eva", "Milla", "Segredos", "A Tal Canção Pra Lua", "Onde Você Mora?", "Te Ver", "W/Brasil (Chama o Síndico)"];
+/* MESTRE: so o tablet do Mad chama/pula/zera/oculta. Liga com ?mestre=1 no link (fica salvo), desliga com ?mestre=0 */
+var MESTRE=(function(){var q=null;try{q=new URLSearchParams(location.search).get('mestre')}catch(e){}
+ if(q==='1')lsx('bk_mestre','1');else if(q==='0')lsx('bk_mestre','0');return lsx('bk_mestre')==='1'})();
+document.body.classList.toggle('mestre',MESTRE);
+/* ---- historico permanente (localStorage): todo pedido que passa, mesmo depois do NOVA NOITE ---- */
+var H={};try{H=JSON.parse(lsx('bk_hist')||'{}')||{}}catch(e){H={}}
+var hT=null;function hSalva(){clearTimeout(hT);hT=setTimeout(function(){lsx('bk_hist',JSON.stringify(H))},400)}
+function hReg(e){
+ if(e.k==='ped'&&e.id&&e.m){if(!H[e.id]){H[e.id]={m:String(e.m).slice(0,80),n:String(e.n||'').slice(0,30),t:e._t||Math.floor(Date.now()/1000)};if(e.d==='banda')H[e.id].b=1;hSalva()}}
+ else if(e.k==='st'&&e.ms&&H[e.id]&&H[e.id].s!==e.s){H[e.id].s=e.s;hSalva()}
+}
+/* noite = data de (hora - 12h): quem pede 1h da manha conta na noite anterior */
+function noiteDe(t){var d=new Date((t-12*3600)*1000);return d.getFullYear()+'-'+('0'+(d.getMonth()+1)).slice(-2)+'-'+('0'+d.getDate()).slice(-2)}
+function contagem(noite){var C={};for(var id in H){var p=H[id];if(noite&&noiteDe(p.t)!==noite)continue;
+ var c=C[p.m]||(C[p.m]={m:p.m,n:0,f:0,u:0});c.n++;if(p.s==='feita')c.f++;if(p.t>c.u)c.u=p.t}
+ return Object.keys(C).map(function(k){return C[k]}).sort(function(a,b){return b.n-a.n||b.u-a.u})}
+/* ranking do QR = pedidos reais + bonus da lista da banda (1a da lista vale 3 pedidos) */
+function rankAtual(){var S={},C=contagem('');
+ RANK0.forEach(function(t,k){S[t]=3*(RANK0.length-k)/RANK0.length});
+ C.forEach(function(c){if(IDX[c.m]!=null)S[c.m]=(S[c.m]||0)+c.n});
+ return Object.keys(S).sort(function(a,b){return S[b]-S[a]||RANK0.indexOf(a)-RANK0.indexOf(b)}).slice(0,30)}
 function aviso(m){var t=G('toast');t.textContent=m;t.classList.add('on');clearTimeout(aviso.t);aviso.t=setTimeout(function(){t.classList.remove('on')},2200)}
+var SEGUE;
 function recalc(){
  EVS.sort(function(a,b){return a._t-b._t});
  ST=estado(EVS.concat(PEND));render();
+ if(MESTRE){if(carregou)lsx('bk_oc',JSON.stringify(ST.oc))}
+ else segue();
+}
+/* guris: o tablet abre sozinho a cifra de quem o Mad chamou */
+function segue(){
+ if(!carregou)return;
+ var a=ST.agora[0],id=a?a.id:null;if(id===SEGUE)return;SEGUE=id;
+ if(a&&IDX[a.m]!=null){abre(IDX[a.m],a.id);aviso('🎤 '+a.n+' · '+a.m)}
+ else if(!a&&CURQ)volta();
 }
 var rcT=null;function agenda(){clearTimeout(rcT);rcT=setTimeout(recalc,60)}
 function entra(e){
- if(VISTO[e._id])return;VISTO[e._id]=1;
+ if(VISTO[e._id])return;VISTO[e._id]=1;hReg(e);
  if(e.x)PEND=PEND.filter(function(p){return p.x!==e.x});
  EVS.push(e);
  if(carregou&&e.k==='ped'&&e.d!=='banda')aviso('🎤 novo pedido: '+String(e.n||'').slice(0,30)+' · '+String(e.m||'').slice(0,40));
@@ -25930,31 +25992,41 @@ function entra(e){
 }
 /* acao da banda: aparece na hora (PEND) e some do PEND quando o eco do servidor chega */
 function age(e){
+ if(e.k!=='ped'){if(!MESTRE)return Promise.resolve();e.ms=1}
  e.x=novoId();var l=JSON.parse(JSON.stringify(e));l._t=9e12;l._id='L'+e.x;PEND.push(l);recalc();
  return manda(e).catch(function(){PEND=PEND.filter(function(p){return p.x!==e.x});recalc();aviso('sem internet: não salvou')});
 }
-function marca(id,s){if(ST.Q[id]&&ST.Q[id].s!==s)age({k:'st',id:id,s:s})}
+function marca(id,s){if(MESTRE&&ST.Q[id]&&ST.Q[id].s!==s)age({k:'st',id:id,s:s})}
 
 /* ---- conexao: SSE ao vivo + conferida periodica ---- */
 var es=null,vivo=false;
-function rede(){var r=G('rede');r.classList.toggle('on',vivo);r.querySelector('span').textContent=vivo?'ao vivo':'reconectando… (os pedidos esperam no servidor)'}
+function rede(){var r=G('rede');r.classList.toggle('on',vivo);r.querySelector('span').textContent=vivo?'ao vivo':'reconectando… (os pedidos esperam no servidor)';
+ G('papel').textContent=MESTRE?'MESTRE':'SEGUINDO O MESTRE'}
 function conecta(){
  try{es=new EventSource(SRV+'/'+TOPICO+'/sse?since=all')}catch(e){return}
  es.onopen=function(){vivo=true;rede()};
  es.onerror=function(){vivo=false;rede()};
  es.onmessage=function(m){var o;try{o=JSON.parse(m.data)}catch(x){return}var e=evDe(o);if(e)entra(e)};
 }
-function confere(){return ler().then(function(l){l.forEach(entra);carregou=true;if(!vivo&&es&&es.readyState===2){conecta()}}).catch(function(){})}
+var publicou=false;
+function confere(){return ler().then(function(l){l.forEach(entra);var pri=!carregou;carregou=true;recalc();if(pri)abertura();if(!vivo&&es&&es.readyState===2){conecta()}}).catch(function(){})}
+/* mestre ao abrir: republica ocultas e ranking (o servidor so guarda ~12 h) */
+function abertura(){if(!MESTRE||publicou)return;publicou=true;
+ var oc=[];try{oc=JSON.parse(lsx('bk_oc')||'[]')||[]}catch(e){}
+ if(!ST.oc.length&&oc.length)age({k:'oculta',l:oc});
+ publicaRank()}
+function publicaRank(){if(!MESTRE)return;var r=rankAtual();if(JSON.stringify(r)!==JSON.stringify(ST.rk))age({k:'rank',l:r})}
 setInterval(function(){if(!vivo||Math.random()<.25)confere()},20000);
 
 /* ---- listas ---- */
 function tomDe(t){var i=IDX[t];if(i==null)return '';var b=tomBase(i),tr=b?trDe(i):0;return tr?tomNome(b,tr)+' ('+trTxt(tr)+')':M[i].k}
 function linhaQ(q,pos,cls){
  var tem=IDX[q.m]!=null,bts='';
- if(cls==='agora')bts='<button class="go" data-a="abre">CIFRA</button><button data-a="feita">&#10003;</button><button class="x" data-a="pula">&#10005;</button>';
+ if(!MESTRE)bts=cls==='feita'?'':'<button class="go" data-a="abre">CIFRA</button>';
+ else if(cls==='agora')bts='<button class="go" data-a="abre">CIFRA</button><button data-a="feita">&#10003;</button><button class="x" data-a="pula">&#10005;</button>';
  else if(cls==='fila')bts='<button class="go" data-a="chama">CHAMAR</button><button class="x" data-a="pula">&#10005;</button>';
  else bts='<button data-a="volta">&#8634;</button>';
- return '<div class="q '+cls+'" data-id="'+esc(q.id)+'"><span class="p">'+(pos||'')+'</span><div class="tx" data-a="'+(cls==='feita'?'':cls==='agora'?'abre':'chama')+'"><b>'+esc(q.n)+'</b><span>'+esc(q.m)+(tem?' <em>'+esc(tomDe(q.m))+'</em>':' <em>sem cifra</em>')+(q.s==='pulada'?' · pulada':'')+'</span></div>'+bts+'</div>';
+ return '<div class="q '+cls+'" data-id="'+esc(q.id)+'"><span class="p">'+(pos||'')+'</span><div class="tx" data-a="'+(cls==='feita'?'':(cls==='agora'||!MESTRE)?'abre':'chama')+'"><b>'+esc(q.n)+'</b><span>'+esc(q.m)+(tem?' <em>'+esc(tomDe(q.m))+'</em>':' <em>sem cifra</em>')+(q.s==='pulada'?' · pulada':'')+'</span></div>'+bts+'</div>';
 }
 function render(){
  var h='';
@@ -25966,13 +26038,16 @@ function render(){
  G('nf').textContent=ST.fila.length?'('+ST.fila.length+')':'';
  var bd=G('b-set').querySelector('.bd');bd.hidden=!ST.fila.length;bd.textContent=ST.fila.length;
  if(!G('v-rep').hidden)rep();
+ if(!G('v-hist').hidden)hist();
  if(CURQ&&cur>=0)pintaNowQ();
 }
 function norm(t){return String(t).normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase()}
 var ESTILOS=["ROCK NACIONAL", "POP ROCK INTERNACIONAL", "POP & DIVAS", "BRASILIDADES, AXÉ & MPB", "REGGAE & GOOD VIBES", "SERTANEJO & ROMÂNTICAS", "FESTA & ZOEIRA"],REPF=lsx('bk_rest')||'';
 var ORDA=M.map(function(m,i){return i}).sort(function(a,b){var d=ESTILOS.indexOf(M[a].s)-ESTILOS.indexOf(M[b].s);return d||M[a].t.localeCompare(M[b].t,'pt')});
 function artista(i){var e=G('m'+i).querySelector('h2 em');return e?e.textContent:''}
+var CNT={};
 function rep(){
+ CNT={};contagem('').forEach(function(c){CNT[c.m]=c.n});
  var q=norm(G('rep-busca').value.trim()),h='',gs='';
  var c='<button data-s=""'+(REPF?'':' class="on"')+'>TODAS ('+M.length+')</button>';
  ESTILOS.forEach(function(s){var k=M.filter(function(m){return m.s===s}).length;c+='<button data-s="'+esc(s)+'"'+(REPF===s?' class="on"':'')+'>'+esc(s)+' ('+k+')</button>'});
@@ -25982,13 +26057,39 @@ function rep(){
   if(q&&norm(M[i].t+' '+a).indexOf(q)<0)return;
   if(M[i].s!==gs){gs=M[i].s;h+='<div class="rg">'+esc(gs)+'</div>'}
   var oc=ST.oc.indexOf(M[i].t)>=0;
-  h+='<div class="r'+(oc?' oc':'')+'" data-i="'+i+'"><div class="tx" data-a="abre"><b>'+esc(M[i].t)+'</b><span>'+esc(a)+'<em>'+esc(tomDe(M[i].t))+'</em></span></div>'+
+  var nc=CNT[M[i].t]||0;
+  h+='<div class="r'+(oc?' oc':'')+'" data-i="'+i+'"><div class="tx" data-a="abre"><b>'+esc(M[i].t)+'</b><span>'+esc(a)+'<em>'+esc(tomDe(M[i].t))+'</em>'+(nc?'<i>· pedida '+nc+'×</i>':'')+'</span></div>'+
    '<button data-a="add">+ FILA</button><button class="olho'+(oc?' off':'')+'" data-a="olho">'+(oc?'OCULTA':'NO QR')+'</button></div>'});
  G('rep-l').innerHTML=h||'<div class="vz">nada com esse nome</div>';
 }
 G('rep-ch').addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;REPF=b.dataset.s;lsx('bk_rest',REPF);rep()});
-function aba(a){ABA=a;lsx('bk_aba',a);G('v-fila').hidden=a!=='fila';G('v-rep').hidden=a!=='rep';
- [].forEach.call(G('tabs').children,function(b){b.classList.toggle('on',b.dataset.a===a)});if(a==='rep')rep()}
+function aba(a){if(['fila','rep','hist'].indexOf(a)<0)a='fila';ABA=a;lsx('bk_aba',a);G('v-fila').hidden=a!=='fila';G('v-rep').hidden=a!=='rep';G('v-hist').hidden=a!=='hist';
+ [].forEach.call(G('tabs').children,function(b){b.classList.toggle('on',b.dataset.a===a)});if(a==='rep')rep();if(a==='hist')hist()}
+/* ---- aba historico ---- */
+var HN=lsx('bk_hn')||'';
+function fData(n){var p=n.split('-');var d=new Date(+p[0],+p[1]-1,+p[2]);return ['dom','seg','ter','qua','qui','sex','sáb'][d.getDay()]+' '+p[2]+'/'+p[1]+'/'+p[0].slice(2)}
+function hist(){
+ var N={};for(var id in H){var k=noiteDe(H[id].t);N[k]=(N[k]||0)+1}
+ var ns=Object.keys(N).sort().reverse();if(HN&&!N[HN])HN='';
+ G('h-noite').innerHTML='<option value="">TODAS AS NOITES ('+ns.length+')</option>'+ns.map(function(n){return '<option value="'+n+'"'+(HN===n?' selected':'')+'>'+fData(n)+' · '+N[n]+' pedidos</option>'}).join('');
+ var C=contagem(HN),tot=0;C.forEach(function(c){tot+=c.n});
+ G('h-res').textContent=tot?(tot+' pedidos · '+C.length+' músicas diferentes'+(HN?'':' · desde '+(ns.length?fData(ns[ns.length-1]):''))):'';
+ var mx=C.length?C[0].n:1;
+ G('h-l').innerHTML=C.length?C.map(function(c,k){var a=IDX[c.m]!=null?(M[IDX[c.m]].a||''):'fora do repertório';
+  return '<div class="hr" data-m="'+esc(c.m)+'"><span class="p">'+(k+1)+'</span><div class="tx"><b>'+esc(c.m)+'</b><span>'+esc(a)+(c.f?' · cantada '+c.f+'×':'')+'</span><div class="bar" style="width:'+Math.max(4,Math.round(100*c.n/mx))+'%"></div></div><span class="c">'+c.n+'×</span></div>'}).join('')
+  :'<div class="vz">Ainda nada guardado neste tablet. Cada pedido que chegar daqui pra frente fica salvo aqui, mesmo depois do NOVA NOITE.</div>';
+}
+G('h-noite').onchange=function(){HN=this.value;lsx('bk_hn',HN);hist()};
+G('h-l').addEventListener('click',function(e){var r=e.target.closest('.hr');if(r&&IDX[r.dataset.m]!=null)abre(IDX[r.dataset.m])});
+G('h-cp').onclick=function(){var t=JSON.stringify({bandaoke_hist:1,em:new Date().toISOString(),p:H});
+ var ok=function(){aviso('backup copiado ('+Object.keys(H).length+' pedidos)')};
+ if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(t).then(ok,function(){mostra(t)});else mostra(t);
+ function mostra(t){var x=G('h-txt');x.hidden=false;x.value=t;x.select();aviso('seleciona e copia o texto')}};
+G('h-imp').onclick=function(){var x=G('h-txt');x.hidden=false;x.value='';G('h-ok').hidden=false;x.focus()};
+G('h-ok').onclick=function(){var o;try{o=JSON.parse(G('h-txt').value)}catch(e){aviso('backup inválido');return}
+ var p=o&&o.p,n=0;if(!p){aviso('backup inválido');return}
+ for(var id in p){var v=p[id];if(!v||!v.m||!v.t)continue;if(!H[id]){H[id]=v;n++}else if(v.s&&!H[id].s)H[id].s=v.s}
+ lsx('bk_hist',JSON.stringify(H));G('h-txt').hidden=true;G('h-ok').hidden=true;aviso(n+' pedidos novos juntados');hist();publicaRank()};
 G('tabs').addEventListener('click',function(e){var b=e.target.closest('button');if(b)aba(b.dataset.a)});
 G('rep-busca').addEventListener('input',rep);
 
@@ -26012,6 +26113,7 @@ function abre(i,qid){
  G('now').innerHTML=esc(M[i].t)+(M[i].vs?'<span class="vs">VS</span>':'')+'<i>'+esc(M[i].k)+'</i>';
  if(CURQ)pintaNowQ();
  G('nav').style.display='flex';document.body.classList.add('aberto');
+ document.body.classList.toggle('seg',!!CURQ&&!MESTRE);
  var a=G('b-ant'),p=G('b-prox');a.classList.toggle('q-mode',!!CURQ);p.classList.toggle('q-mode',!!CURQ);
  a.innerHTML=CURQ?'&#10005; PULA':'&#8249;';p.innerHTML=CURQ?'&#10003; PRÓX':'&#8250;';
  var v=ls(vk(i));vel=v?+v:18;mostraVel();
@@ -26021,11 +26123,11 @@ function volta(){
  pausa();G('tp').classList.remove('on');
  if(cur>=0)G('m'+cur).hidden=true;
  cur=-1;CURQ=null;G('lst').style.display='block';G('nav').style.display='none';
- document.body.classList.remove('aberto');G('now').textContent='BANDAOK';render();scrollTo(0,0);
+ document.body.classList.remove('aberto');G('now').textContent='BANDAOKE';render();scrollTo(0,0);
 }
 /* chamar um pedido: quem estava no palco vira "cantou" */
 function chama(id){
- var q=ST.Q[id];if(!q)return;
+ var q=ST.Q[id];if(!q||!MESTRE)return;
  ST.agora.forEach(function(a){if(a.id!==id)marca(a.id,'feita')});
  marca(id,'agora');
  if(IDX[q.m]!=null)abre(IDX[q.m],id);else aviso('"'+q.m+'" não tem cifra aqui');
@@ -26033,16 +26135,18 @@ function chama(id){
 function proximo(){var n=ST.fila.filter(function(q){return q.id!==CURQ})[0];if(n)chama(n.id);else{volta();aviso('fila vazia')}}
 function acaoProx(){
  if(cur<0)return;
+ if(CURQ&&!MESTRE)return;
  if(CURQ){marca(CURQ,'feita');proximo();return}
  var p=ORDA.indexOf(cur);if(p>=0&&p<ORDA.length-1)abre(ORDA[p+1]);
 }
 function acaoAnt(){
  if(cur<0)return;
+ if(CURQ&&!MESTRE)return;
  if(CURQ){volta();return}
  var p=ORDA.indexOf(cur);if(p>0)abre(ORDA[p-1]);
 }
 G('b-prox').onclick=acaoProx;
-G('b-ant').onclick=function(){if(CURQ){var q=ST.Q[CURQ];folha('Pular '+(q?q.n:'')+'?','Vai pra "já cantaram" como pulada e chama o próximo.',null,'PULAR',function(){marca(CURQ,'pulada');proximo()})}else acaoAnt()};
+G('b-ant').onclick=function(){if(CURQ&&!MESTRE)return;if(CURQ){var q=ST.Q[CURQ];folha('Pular '+(q?q.n:'')+'?','Vai pra "já cantaram" como pulada e chama o próximo.',null,'PULAR',function(){marca(CURQ,'pulada');proximo()})}else acaoAnt()};
 G('b-set').onclick=volta;
 G('v-fila').addEventListener('click',function(e){var el=e.target.closest('[data-a]'),row=e.target.closest('.q');if(!el||!row||!el.dataset.a)return;
  var id=row.dataset.id,a=el.dataset.a,q=ST.Q[id];if(!q)return;
@@ -26056,10 +26160,10 @@ G('rep-l').addEventListener('click',function(e){var el=e.target.closest('[data-a
  var i=+row.dataset.i,a=el.dataset.a;
  if(a==='abre')abre(i);
  else if(a==='add')folha('+ fila: '+M[i].t,'Nome de quem vai cantar',"nome",'POR NA FILA',function(n){age({k:'ped',id:novoId(),m:M[i].t,n:n,d:'banda'});aviso('na fila: '+n)});
- else if(a==='olho'){var oc=ST.oc.slice(),k=oc.indexOf(M[i].t);if(k>=0)oc.splice(k,1);else oc.push(M[i].t);age({k:'oculta',l:oc})}
+ else if(a==='olho'&&MESTRE){var oc=ST.oc.slice(),k=oc.indexOf(M[i].t);if(k>=0)oc.splice(k,1);else oc.push(M[i].t);age({k:'oculta',l:oc})}
 });
-G('b-noite').onclick=function(){folha('Nova noite?','Zera a fila e o "já cantaram" pra todo mundo. As músicas ocultas continuam ocultas.',null,'ZERAR',function(){
- age({k:'reset'})})};
+G('b-noite').onclick=function(){if(!MESTRE)return;folha('Nova noite?','Zera a fila e o "já cantaram" pra todo mundo. O histórico continua guardado. As ocultas continuam ocultas.',null,'ZERAR',function(){
+ age({k:'reset'});publicaRank()})};
 document.addEventListener('click',function(){trava()},{once:true});
 aba(ABA);render();rede();conecta();confere();
 </script>

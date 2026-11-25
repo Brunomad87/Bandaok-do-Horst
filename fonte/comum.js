@@ -18,18 +18,21 @@ function manda(e){
  return fetch(SRV+'/'+TOPICO,{method:'POST',body:JSON.stringify(e)}).then(function(r){
   if(!r.ok)throw new Error('http '+r.status);return r.json()});
 }
+/* st/reset/oculta/rank so valem vindos do tablet MESTRE (ms:1): os guris so pedem (ped) */
 function estado(evs){
- var Q={},ord=[],oc=[];
+ var Q={},ord=[],oc=[],rk=null;
  evs.forEach(function(e){
+  if(e.k==='ped'){if(e.id&&!Q[e.id]){Q[e.id]={id:e.id,m:String(e.m||'').slice(0,80),n:String(e.n||'').slice(0,30),d:e.d,t:e._t,s:'fila'};ord.push(e.id)}return}
+  if(!e.ms)return;
   if(e.k==='reset'){Q={};ord=[]}
-  else if(e.k==='ped'){if(e.id&&!Q[e.id]){Q[e.id]={id:e.id,m:String(e.m||'').slice(0,80),n:String(e.n||'').slice(0,30),d:e.d,t:e._t,s:'fila'};ord.push(e.id)}}
   else if(e.k==='st'){if(Q[e.id]){Q[e.id].s=e.s;Q[e.id].ts=e._t}}
   else if(e.k==='oculta'){oc=Array.isArray(e.l)?e.l:[]}
+  else if(e.k==='rank'){rk=Array.isArray(e.l)?e.l:null}
  });
  var L=ord.map(function(i){return Q[i]});
  return {Q:Q,
   agora:L.filter(function(q){return q.s==='agora'}),
   fila:L.filter(function(q){return q.s==='fila'}),
   feitas:L.filter(function(q){return q.s==='feita'||q.s==='pulada'}).sort(function(a,b){return (b.ts||0)-(a.ts||0)}),
-  oc:oc};
+  oc:oc,rk:rk};
 }
